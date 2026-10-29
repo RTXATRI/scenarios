@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!--
+    This file is part of USV project.
+
+    Author: WYB
+    Email: 854459949@qq.com
+    Year: 2026
+
+    Copyright (C) 2026 Ocean Information and Intelligent Equipment Laboratory
+-->
+<launch>
+    <!-- vehicle configs -->
+    <arg name="est" default="ekf2"/>
+    <arg name="vehicle" default="iris"/>
+    <!-- evn configs -->
+    <env name="PX4_SIM_MODEL" value="gazebo-classic_$(arg vehicle)" />
+    <!-- PX4 configs -->
+    <arg name="interactive" default="true"/>
+    <!-- PX4 SITL -->
+    <arg unless="$(arg interactive)" name="px4_command_arg1" value="-d"/>
+    <arg     if="$(arg interactive)" name="px4_command_arg1" value=""/>
+    <node name="sitl" pkg="px4" type="px4" output="screen" args="$(find px4)/build/px4_sitl_default/etc -s etc/init.d-posix/rcS $(arg px4_command_arg1)" required="true"/>
+</launch>
+
+<!--
+    说明：
+    1. 这个launch仅启动px4的核心软件在环仿真，需要同步启动gazebo仿真器并放置无人机使用
+    2. 本代码从px4的posix_sitl.launch文件修改而来
+    
+    使用示例:(在其他launch文件中导入，并自行设置参数)
+    <include file="$(find your_pkg)/launch/posix_sitl.launch">
+        <arg name="vehicle" value="$(arg vehicle)"/>
+        <arg name="interactive" value="$(arg interactive)"/>
+        <arg name="est" value="$(arg est)"/>
+    </include>
+-->

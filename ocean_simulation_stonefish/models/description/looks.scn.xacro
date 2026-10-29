@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!--
+    This file is part of USV project.
+
+    Author: WYB
+    Email: 854459949@qq.com
+    Year: 2025
+
+    Copyright (C) 2025 Ocean Information and Intelligent Equipment Laboratory
+-->
+<scenario>
+
+    <!-- 外观材质定义 - 包含颜色、粗糙度、金属度等物理渲染属性 -->
+    <!--
+        材质参数说明：
+        - gray: 灰度值 (0=黑色, 1=白色)
+        - rgb: 红绿蓝三色值 (0-1范围)
+        - roughness: 粗糙度 (0=镜面光滑, 1=完全漫反射)
+        - metalness: 金属度 (0=非金属, 1=纯金属)
+        
+        命名约定：
+        1. 基础颜色使用英文颜色名
+        2. 功能材质使用"功能_颜色"格式
+        3. 专用部件使用部件英文名称
+    -->
+    <looks>
+        <!-- 颜色材质 -->
+        <look name="black" gray="0.05" roughness="0.2"/>  <!-- 黑色 - 默认色 -->
+        <look name="yellow" rgb="1.0 0.9 0.0" roughness="0.3"/>  <!-- 黄色 - 默认色 -->
+        <look name="blue" rgb="0.1 0.1 0.9" roughness="0.3"/>  <!-- 蓝色 - 默认色 -->
+        <look name="red" rgb="0.9 0.1 0.1" roughness="0.3"/>  <!-- 红色 - 默认色 -->
+        <look name="gray" gray="0.5" roughness="0.4" metalness="0.5"/>  <!-- 灰色 - 默认色 -->
+        <look name="green" rgb="0.1 0.8 0.2" roughness="0.3"/>  <!-- 绿色 - 用于安全标识、指示灯 -->
+        <look name="orange" rgb="1.0 0.5 0.0" roughness="0.3"/>  <!-- 橙色 - 用于警告标识、高可见度部件 -->
+        <look name="purple" rgb="0.6 0.2 0.8" roughness="0.3"/>  <!-- 紫色 - 用于特殊功能部件 -->
+        <look name="cyan" rgb="0.2 0.8 0.9" roughness="0.3"/>  <!-- 青色 - 用于传感器、电子设备 -->
+        <look name="white" gray="0.95" roughness="0.4"/>  <!-- 白色 - 用于标签、文字 -->
+        
+        <!-- 金属材质 -->
+        <look name="chrome" gray="0.7" roughness="0.1" metalness="1.0"/>  <!-- 铬合金 - 高反射金属表面 -->
+        <look name="copper" rgb="0.8 0.5 0.3" roughness="0.2" metalness="0.9"/>  <!-- 铜 - 暖色调金属 -->
+        <look name="brass" rgb="0.8 0.7 0.3" roughness="0.3" metalness="0.9"/>  <!-- 黄铜 - 金色金属质感 -->
+        <look name="aluminum" gray="0.8" roughness="0.2" metalness="0.8"/>  <!-- 铝 - 轻质金属表面 -->
+        
+        <!-- 传感器及功能材质 -->
+        <look name="glow_blue" rgb="0.2 0.4 1.0" roughness="0.1" metalness="0.2"/>  <!-- 发光蓝 - 用于指示灯、显示器 -->
+        <look name="rubber" gray="0.15" roughness="0.9"/>  <!-- 橡胶 - 高粗糙度，用于密封件 -->
+        <look name="glass" rgb="0.9 0.9 0.95" roughness="0.05" metalness="0.0"/>  <!-- 玻璃 - 透明/半透明材质 -->
+        <look name="camera_lens" gray="0.05" roughness="0.05" metalness="0.3"/>  <!-- 摄像头镜头 - 高光黑色 -->
+        <look name="sensor_housing" rgb="0.3 0.3 0.4" roughness="0.5" metalness="0.6"/>  <!-- 传感器外壳 -->
+        <look name="acoustic_window" gray="0.6" roughness="0.2" metalness="0.1"/>  <!-- 声学窗口 - 声呐透声材料 -->
+
+        <!-- 专用部件材质 -->
+        <look name="tank" rgb="0.9 0.9 0.9" roughness="0.9"/>  <!-- 水箱/容器 - 高粗糙度白色 -->
+        <look name="ice" rgb="0.31 0.34 0.35" roughness="0.9"/>  <!-- 冰 - 模拟冰面材质 -->
+        <look name="duct" gray="0.1" roughness="0.4" metalness="0.5"/>  <!-- 管道/导管 - 深灰色金属 -->
+        <look name="manipulator" rgb="0.2 0.15 0.1" roughness="0.6" metalness="0.8"/>  <!-- 机械臂 - 深棕色金属 -->
+        <look name="ee" rgb="0.59 0.56 0.51" roughness="0.6" metalness="0.8"/>  <!-- 末端执行器 - 浅灰金属 -->
+        <look name="corroded_metal" rgb="0.4 0.4 0.35" roughness="0.8" metalness="0.3"/>  <!-- 腐蚀金属 - 长期水下使用效果 -->
+        <look name="biofouling" rgb="0.3 0.4 0.3" roughness="0.9"/>  <!-- 生物附着 - 模拟海洋生物附着表面 -->
+        <look name="antifouling" rgb="0.7 0.2 0.2" roughness="0.7"/>  <!-- 防污漆 - 红色防污涂层 -->
+
+        <!-- 标识材质 -->
+        <look name="safety_yellow" rgb="1.0 0.85 0.0" roughness="0.4"/>  <!-- 安全黄 - 警告标识色 -->
+        <look name="safety_orange" rgb="1.0 0.5 0.0" roughness="0.4"/>  <!-- 安全橙 - 危险区域标识 -->
+    </looks>
+    
+</scenario>

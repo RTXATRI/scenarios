@@ -1,0 +1,317 @@
+<?xml version="1.0"?>
+<!--
+    This file is part of USV project.
+
+    Author: WYB
+    Email: 854459949@qq.com
+    Year: 2025
+
+    Copyright (C) 2025 Ocean Information and Intelligent Equipment Laboratory
+-->
+<scenario xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find ocean_simulation_stonefish)/models/description/looks.scn.xacro"/>
+    <xacro:include filename="$(find ocean_simulation_stonefish)/models/description/materials.scn.xacro"/>
+
+    <xacro:macro name="under_usv" params="xyz rpy robot_name">
+        <robot name="${robot_name}" fixed="false" self_collisions="false">
+
+            <base_link name="USV_Hull" type="compound" physics="submerged">
+
+                <!-- 主模型 -->
+                <external_part name="Hull" type="model" physics="submerged" buoyant="false">
+                    <physical>
+                        <!-- 物理模型文件 -->
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/under_usv_physical.obj" scale="0.001"/>
+                        <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    </physical>
+                    <visual>
+                        <!-- 视觉模型文件 -->
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/under_usv_visual.obj" scale="0.001"/>
+                        <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    </visual>
+                    <material name="Vehicle"/>
+                    <look name="aluminum"/>
+                    <mass value="12.0"/>
+                    <inertia xyz="10.0 10.0 10.0"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <cg xyz="0.0 -0.005 -0.10" rpy="0.0 0.0 0.0"/>
+                </external_part>
+
+                <!-- 用于测试浮块位置的模型 -->
+                <!-- <external_part name="Foamt4" type="cylinder" physics="submerged" buoyant="false">
+                    <dimensions radius="0.05" height="0.55"/>
+                    <origin rpy="1.571 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <material name="Neutral"/>
+                    <mass value="0.1"/>
+                    <look name="red" opacity="0.8"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="-0.210 0.0 -0.055"/>
+                </external_part> -->
+
+                <!-- 左浮块 -->
+                <internal_part name="Foam1" type="cylinder" physics="surface" buoyant="true">
+                    <dimensions radius="0.05" height="0.55"/>
+                    <origin rpy="1.571 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <material name="Foam"/>
+                    <mass value="0.01"/>
+                    <look name="grey"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="-0.210 0.0 -0.055"/>
+                </internal_part>
+            
+                <!-- 右浮块 -->
+                <internal_part name="Foam2" type="cylinder" physics="surface" buoyant="true">
+                    <dimensions radius="0.05" height="0.55"/>
+                    <origin rpy="1.571 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <material name="Foam"/>
+                    <mass value="0.01"/>
+                    <look name="grey"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.210 0.0 -0.055"/>
+                </internal_part>
+
+                <!-- 下浮块 -->
+                <internal_part name="Foam3" type="cylinder" physics="surface" buoyant="true">
+                    <dimensions radius="0.05" height="0.55"/>
+                    <origin rpy="1.571 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <material name="Foam"/>
+                    <mass value="0.01"/>
+                    <look name="grey"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.175"/>
+                </internal_part>
+
+                <!-- 左水平推进螺旋桨保护页 -->
+                <external_part name="SternThrusterDuctSurgeLeft" type="model" physics="submerged" buoyant="false">
+                    <physical>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="1.571 0.0 3.1415" xyz="-0.210 -0.30 -0.055"/>
+                    </physical>
+                    <visual>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="1.571 0.0 3.1415" xyz="-0.210 -0.30 -0.055"/>
+                    </visual>
+                    <material name="Neutral"/>
+                    <look name="black"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                </external_part>
+
+                <!-- 右水平推进螺旋桨保护页 -->
+                <external_part name="SternThrusterDuctSurgeRight" type="model" physics="submerged" buoyant="false">
+                    <physical>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="1.571 0.0 3.1415" xyz="0.210 -0.30 -0.055"/>
+                    </physical>
+                    <visual>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="1.571 0.0 3.1415" xyz="0.210 -0.30 -0.055"/>
+                    </visual>
+                    <material name="Neutral"/>
+                    <look name="black"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                </external_part>
+
+                <!-- 下面垂推的保护页命名使用象限命名法 -->
+                <!-- 垂直推进螺旋桨保护页（左上-第二象限） -->
+                <external_part name="VerticalThrusterDuctSurgeQuadrant2" type="model" physics="submerged" buoyant="false">
+                    <physical>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="0.0 0.0 3.1415" xyz="-0.115 0.110 -0.135"/>
+                    </physical>
+                    <visual>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="0.0 0.0 3.1415" xyz="-0.115 0.110 -0.135"/>
+                    </visual>
+                    <material name="Neutral"/>
+                    <look name="black"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                </external_part>
+
+                <!-- 垂直推进螺旋桨保护页（左下-第三象限） -->
+                <external_part name="VerticalThrusterDuctSurgeQuadrant3" type="model" physics="submerged" buoyant="false">
+                    <physical>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="0.0 0.0 3.1415" xyz="-0.115 -0.110 -0.135"/>
+                    </physical>
+                    <visual>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="0.0 0.0 3.1415" xyz="-0.115 -0.110 -0.135"/>
+                    </visual>
+                    <material name="Neutral"/>
+                    <look name="black"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                </external_part>
+
+                <!-- 垂直推进螺旋桨保护页（右上-第一象限） -->
+                <external_part name="VerticalThrusterDuctSurgeQuadrant1" type="model" physics="submerged" buoyant="false">
+                    <physical>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="0.0 0.0 3.1415" xyz="0.115 0.110 -0.135"/>
+                    </physical>
+                    <visual>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="0.0 0.0 3.1415" xyz="0.115 0.110 -0.135"/>
+                    </visual>
+                    <material name="Neutral"/>
+                    <look name="black"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                </external_part>
+
+                <!-- 垂直推进螺旋桨保护页（右下-第四象限） -->
+                <external_part name="VerticalThrusterDuctSurgeQuadrant4" type="model" physics="submerged" buoyant="false">
+                    <physical>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="0.0 0.0 3.1415" xyz="0.115 -0.110 -0.135"/>
+                    </physical>
+                    <visual>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.0005"/>
+                        <origin rpy="0.0 0.0 3.1415" xyz="0.115 -0.110 -0.135"/>
+                    </visual>
+                    <material name="Neutral"/>
+                    <look name="black"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                </external_part>
+
+            </base_link>
+
+            <!-- 简化的基准坐标系 -->
+            <link name="Base" type="box" physics="surface">
+                <dimensions xyz="0.01 0.01 0.01"/>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <material name="Neutral"/>
+                <look name="Green"/>
+            </link>
+            
+            <!-- 连接关节 -->
+            <joint name="Base_Joint" type="fixed">
+                <parent name="USV_Hull"/>
+                <child name="Base"/>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <axis xyz="1.0 0.0 0.0"/>
+            </joint>
+
+            <!-- 左侧水平推进器 -->
+            <actuator name="SternThrusterLeft" type="thruster">
+                <link name="Base"/>
+                <origin rpy="0.0 0.0 1.571" xyz="-0.210 -0.315 -0.055"/>
+                <specs thrust_coeff="1.7568" thrust_coeff_backward="1.0882" torque_coeff="0.01" max_rpm="3000.0"/>
+                <propeller diameter="0.08" right="false">
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <mesh filename="prop.obj" scale="0.5"/>
+                    <material name="Neutral"/>
+                    <look name="white"/>
+                </propeller>
+                <ros_subscriber topic="/${robot_name}/control/thruster/left"/>
+            </actuator>
+
+            <!-- 右侧水平推进器 -->
+            <actuator name="SternThrusterRight" type="thruster">
+                <link name="Base"/>
+                <origin rpy="0.0 0.0 1.571" xyz="0.210 -0.315 -0.055"/>
+                <specs thrust_coeff="1.7568" thrust_coeff_backward="1.0882" torque_coeff="0.01" max_rpm="3000.0"/>
+                <propeller diameter="0.08" right="true">
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <mesh filename="prop.obj" scale="0.5"/>
+                    <material name="Neutral"/>
+                    <look name="white"/>
+                </propeller>
+                <ros_subscriber topic="/${robot_name}/control/thruster/right"/>
+            </actuator>
+
+
+            <!-- 下面垂推的命名使用象限命名法 -->
+            <!-- 垂直推进器（左上-第二象限） -->
+            <actuator name="VerticalThrusterQuadrant2" type="thruster">
+                <link name="Base"/>
+                <origin rpy="0.0 1.571 0.0" xyz="-0.115 0.110 -0.125"/>
+                <specs thrust_coeff="1.7568" thrust_coeff_backward="1.0882" torque_coeff="0.01" max_rpm="3000.0"/>
+                <propeller diameter="0.08" right="true">
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <mesh filename="prop.obj" scale="0.5"/>
+                    <material name="Neutral"/>
+                    <look name="white"/>
+                </propeller>
+                <ros_subscriber topic="/${robot_name}/control/thruster/VerticalThrusterQuadrant2"/>
+            </actuator>
+
+            <!-- 垂直推进器（左下-第三象限） -->
+            <actuator name="VerticalThrusterQuadrant3" type="thruster">
+                <link name="Base"/>
+                <origin rpy="0.0 1.571 0.0" xyz="-0.115 -0.110 -0.125"/>
+                <specs thrust_coeff="1.7568" thrust_coeff_backward="1.0882" torque_coeff="0.01" max_rpm="3000.0"/>
+                <propeller diameter="0.08" right="false">
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <mesh filename="prop.obj" scale="0.5"/>
+                    <material name="Neutral"/>
+                    <look name="white"/>
+                </propeller>
+                <ros_subscriber topic="/${robot_name}/control/thruster/VerticalThrusterQuadrant3"/>
+            </actuator>
+
+            <!-- 垂直推进器（右上-第一象限） -->
+            <actuator name="VerticalThrusterQuadrant1" type="thruster">
+                <link name="Base"/>
+                <origin rpy="0.0 1.571 0.0" xyz="0.115 0.110 -0.125"/>
+                <specs thrust_coeff="1.7568" thrust_coeff_backward="1.0882" torque_coeff="0.01" max_rpm="3000.0"/>
+                <propeller diameter="0.08" right="false">
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <mesh filename="prop.obj" scale="0.5"/>
+                    <material name="Neutral"/>
+                    <look name="white"/>
+                </propeller>
+                <ros_subscriber topic="/${robot_name}/control/thruster/VerticalThrusterQuadrant1"/>
+            </actuator>
+
+            <!-- 垂直推进器（右下-第四象限） -->
+            <actuator name="VerticalThrusterQuadrant4" type="thruster">
+                <link name="Base"/>
+                <origin rpy="0.0 1.571 0.0" xyz="0.115 -0.110 -0.125"/>
+                <specs thrust_coeff="1.7568" thrust_coeff_backward="1.0882" torque_coeff="0.01" max_rpm="3000.0"/>
+                <propeller diameter="0.08" right="true">
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <mesh filename="prop.obj" scale="0.5"/>
+                    <material name="Neutral"/>
+                    <look name="white"/>
+                </propeller>
+                <ros_subscriber topic="/${robot_name}/control/thruster/VerticalThrusterQuadrant4"/>
+            </actuator>
+
+            <!-- 传感器安装 -->
+
+            <!-- IMU -->
+            <sensor name="imu_01" type="imu" rate="50.0">
+                <link name="Base"/>
+                <origin rpy="0.0 0.0 0.0" xyz="0.210 0.0 -0.055"/>
+                <noise angle="0.01 0.01 0.05" angular_velocity="0.05" yaw_drift="0.001" linear_acceleration="0.1"/>
+                <ros_publisher topic="/${robot_name}/sensor/imu"/>
+            </sensor>
+
+            <!-- 里程计 -->
+            <sensor name="odometry_1" rate="30.0" type="odometry">
+                <link name="Base"/>
+                <noise position="0.00" velocity="0.00" angle="0.00" angular_velocity="0.00"/>
+                <history samples="1"/>
+                <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                <ros_publisher topic="/${robot_name}/sensor/odometry"/>
+            </sensor>
+
+            <!-- 深度计 -->
+            <sensor name="depth_01" type="pressure" rate="50.0">
+                <link name="Base"/>
+                <origin rpy="0.0 0.0 0.0" xyz="0.210 0.210 -0.055"/>
+                <noise pressure="2.0"/>
+                <ros_publisher topic="/${robot_name}/sensor/depth"/>
+            </sensor>
+
+            <!-- 彩色相机 -->
+            <sensor name="color_camera_1" type="camera" rate="30.0">
+                <link name="Base"/>
+                <specs resolution_x="1280" resolution_y="720" horizontal_fov="90.0"/>
+                <origin rpy="-1.571 0.0 0.0" xyz="-0.210 0.290 -0.055"/>
+                <ros_publisher topic="/${robot_name}/sensor/color_cam"/>
+            </sensor>
+
+            <!-- 世界坐标系变换 -->
+            <world_transform rpy="${rpy}" xyz="${xyz}"/>
+
+        </robot>
+    </xacro:macro>
+
+</scenario>

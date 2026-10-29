@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="apriltag_3">
+    <static>true</static>
+    <link name="link">
+      <visual name="visual">
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>0.2 0.2</size>
+          </plane>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://apriltag_3/materials/scripts</uri>
+            <uri>model://apriltag_3/materials/textures</uri>
+            <name>Apriltag3/Tag</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

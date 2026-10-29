@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- ========== 最小化Gazebo配置 ========== -->
+    <!-- 要加载的Gazebo世界文件 -->
+    <arg name="world" default="$(find ocean_simulation_gazebo)/worlds/px4-default/empty.world" />
+    <!-- 关闭GUI以加快启动速度 -->
+    <arg name="gui" default="true" />
+    <arg name="verbose" default="false"/>
+    <arg name="paused" default="false"/>
+
+    <!-- ========== 启动Gazebo ========== -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world)"/>
+        <arg name="verbose" value="$(arg verbose)"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="$(arg gui)" />
+        <!-- 关闭物理引擎渲染以提高性能 -->
+        <arg name="physics" default="ode"/>
+    </include>
+</launch>

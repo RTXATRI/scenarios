@@ -1,0 +1,20 @@
+material Apriltag3/Tag
+{
+  technique
+  {
+    pass
+    {
+      lighting off
+
+      ambient 1 1 1 1
+      diffuse 1 1 1 1
+      specular 0 0 0 1
+
+      texture_unit
+      {
+        texture apriltag_3.png
+        filtering none
+      }
+    }
+  }
+}

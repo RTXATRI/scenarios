@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<!--
+    This file is part of USV project.
+
+    Author: WYB
+    Email: 854459949@qq.com
+    Year: 2025
+
+    Copyright (C) 2025 Ocean Information and Intelligent Equipment Laboratory
+-->
+<scenario xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find ocean_simulation_stonefish)/description/looks.scn.xacro"/>
+    <xacro:include filename="$(find ocean_simulation_stonefish)/description/materials.scn.xacro"/>
+
+    <xacro:macro name="under_usv_easy" params="xyz rpy robot_name">
+        <robot name="${robot_name}" fixed="false" self_collisions="false">
+
+            <base_link name="USV_Hull" type="compound" physics="submerged">
+
+                <!-- 主模型 -->
+                <external_part name="Hull" type="model" physics="submerged" buoyant="false">
+                    <physical>
+                        <!-- 物理模型文件 -->
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/under_usv_easy.obj" scale="0.001"/>
+                        <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    </physical>
+                    <visual>
+                        <!-- 视觉模型文件 -->
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/under_usv_easy.obj" scale="0.001"/>
+                        <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    </visual>
+                    <material name="Neutral"/>
+                    <look name="white"/>
+                    <mass value="10.0"/>
+                    <inertia xyz="10.0 10.0 10.0"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <cg xyz="0.0 -0.20 0.0" rpy="0.0 0.0 0.0"/>
+                </external_part>
+
+                <!-- 用于测试浮块位置的模型 -->
+                <!-- <external_part name="Foamte1" type="cylinder" physics="submerged" buoyant="false">
+                    <dimensions radius="0.05" height="0.55"/>
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <material name="Neutral"/>
+                    <mass value="1.0"/>
+                    <look name="red" opacity="0.8"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 -0.275 0.0"/>
+                </external_part> -->
+
+                <!-- 左浮块 -->
+                <internal_part name="Foam1" type="cylinder" physics="surface" buoyant="true">
+                    <dimensions radius="0.05" height="0.55"/>
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <material name="Foam"/>
+                    <mass value="0.01"/>
+                    <look name="red" opacity="0.8"/>
+                    <!-- <look name="grey"/> -->
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="-0.265 0.0 0.0"/>
+                </internal_part>
+            
+                <!-- 右浮块 -->
+                <internal_part name="Foam2" type="cylinder" physics="surface" buoyant="true">
+                    <dimensions radius="0.05" height="0.55"/>
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <material name="Foam"/>
+                    <mass value="0.01"/>
+                    <look name="grey"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.265 0.0 0.0"/>
+                </internal_part>
+
+                <!-- 下浮块 -->
+                <internal_part name="Foam3" type="cylinder" physics="surface" buoyant="true">
+                    <dimensions radius="0.05" height="0.55"/>
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <material name="Foam"/>
+                    <mass value="0.01"/>
+                    <look name="grey"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 -0.275 0.0"/>
+                </internal_part>
+
+                <!-- 左螺旋桨保护页 -->
+                <external_part name="ThrusterDuctSurgeLeft" type="model" physics="submerged" buoyant="false">
+                    <physical>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.001"/>
+                        <origin rpy="0.0 3.14159 0.0" xyz="-0.265 0.0 0.34"/>
+                    </physical>
+                    <visual>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.001"/>
+                        <origin rpy="0.0 3.14159 0.0" xyz="-0.265 0.0 0.34"/>
+                    </visual>
+                    <material name="Neutral"/>
+                    <look name="black"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                </external_part>
+
+                <!-- 右螺旋桨保护页 -->
+                <external_part name="ThrusterDuctSurgeRight" type="model" physics="submerged" buoyant="false">
+                    <physical>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.001"/>
+                        <origin rpy="0.0 3.14159 0.0" xyz="0.265 0.0 0.34"/>
+                    </physical>
+                    <visual>
+                        <mesh filename="$(find ocean_simulation_stonefish)/meshes/duct.obj" scale="0.001"/>
+                        <origin rpy="0.0 3.14159 0.0" xyz="0.265 0.0 0.34"/>
+                    </visual>
+                    <material name="Neutral"/>
+                    <look name="black"/>
+                    <compound_transform rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                </external_part>
+
+            </base_link>
+
+            <!-- 简化的基准坐标系 -->
+            <link name="Base" type="box" physics="surface">
+                <dimensions xyz="0.01 0.01 0.01"/>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <material name="Neutral"/>
+                <look name="Green"/>
+            </link>
+            
+            <!-- 连接关节 -->
+            <joint name="Base_Joint" type="fixed">
+                <parent name="USV_Hull"/>
+                <child name="Base"/>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+                <axis xyz="1.0 0.0 0.0"/>
+            </joint>
+
+            <!-- 左侧推进器 -->
+            <actuator name="ThrusterLeft" type="thruster">
+                <link name="Base"/>
+                <origin rpy="0.0 1.571 0.0" xyz="-0.265 0.0 0.355"/>
+                <specs thrust_coeff="1.7568" thrust_coeff_backward="1.0882" torque_coeff="0.01" max_rpm="3000.0"/>
+                <propeller diameter="0.08" right="true">
+                    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <mesh filename="prop.obj" scale="1.0"/>
+                    <material name="Neutral"/>
+                    <look name="white"/>
+                </propeller>
+                <ros_subscriber topic="/${robot_name}/control/thruster/left"/>
+            </actuator>
+
+            <!-- 右侧推进器 -->
+            <actuator name="ThrusterRight" type="thruster">
+                <link name="Base"/>
+                <origin rpy="0.0 1.571 0.0" xyz="0.265 0.0 0.355"/>
+                <specs thrust_coeff="1.7568" thrust_coeff_backward="1.0882" torque_coeff="0.01" max_rpm="3000.0"/>
+                <propeller diameter="0.08" right="true">
+                    <origin rpy="1.571 0.0 0.0" xyz="0.0 0.0 0.0"/>
+                    <mesh filename="prop.obj" scale="1.0"/>
+                    <material name="Neutral"/>
+                    <look name="white"/>
+                </propeller>
+                <ros_subscriber topic="/${robot_name}/control/thruster/right"/>
+            </actuator>
+
+            <!-- 世界坐标系变换 -->
+            <world_transform rpy="${rpy}" xyz="${xyz}"/>
+
+        </robot>
+    </xacro:macro>
+
+</scenario>

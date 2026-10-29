@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!--
+    This file is part of USV project.
+
+    Author: WYB
+    Email: 854459949@qq.com
+    Year: 2025
+
+    Copyright (C) 2025 Ocean Information and Intelligent Equipment Laboratory
+-->
+<scenario> <!-- 场景配置文件根节点 -->
+
+    <!-- 材料物理属性定义部分 -->
+    <materials>
+        <!-- 定义各种材料的基本物理属性 -->
+        <material name="Foam" density="320.37" restitution="0.1"/>  <!-- 泡沫材料：密度320.37，恢复系数0.1 -->
+        <material name="Neutral" density="1000.0" restitution="0.1"/>  <!-- 中性材料（如水）：密度1000.0，恢复系数0.1 -->
+        <material name="Resin" density="1150.0" restitution="0.1"/>  <!-- 树脂材料：密度1150.0，恢复系数0.1 -->
+        <material name="Rock" density="3000.0" restitution="0.8"/>  <!-- 岩石材料：密度3000.0，恢复系数0.8 -->
+        <material name="Fiberglass" density="1500.0" restitution="0.3"/>  <!-- 玻璃纤维材料：密度1500.0，恢复系数0.3 -->
+        <material name="Aluminium" density="2710.0" restitution="0.5"/>  <!-- 铝合金材料：密度2710.0，恢复系数0.5 -->
+        <material name="Vehicle" density="990.0" restitution="0.8"/>  <!-- 车辆（船体）材料：密度990.0，恢复系数0.8 -->
+        <material name="Ice" density="900.0" restitution="0.8"/>  <!-- 冰材料：密度900.0，恢复系数0.8 -->
+
+        <!-- 材料间摩擦系数表 -->
+        <friction_table>
+            <!-- 定义不同材料组合之间的静摩擦和动摩擦系数 -->
+            <friction material1="Neutral" material2="Neutral" static="0.5" dynamic="0.2"/>  <!-- 中性材料-中性材料 -->
+            <friction material1="Neutral" material2="Rock" static="0.2" dynamic="0.1"/>  <!-- 中性材料-岩石 -->
+            <friction material1="Neutral" material2="Fiberglass" static="0.5" dynamic="0.2"/>  <!-- 中性材料-玻璃纤维 -->
+            <friction material1="Neutral" material2="Aluminium" static="0.1" dynamic="0.02"/>  <!-- 中性材料-铝合金 -->
+            <friction material1="Rock" material2="Rock" static="0.9" dynamic="0.7"/>  <!-- 岩石-岩石 -->
+            <friction material1="Rock" material2="Fiberglass" static="0.6" dynamic="0.4"/>  <!-- 岩石-玻璃纤维 -->
+            <friction material1="Rock" material2="Aluminium" static="0.6" dynamic="0.3"/>  <!-- 岩石-铝合金 -->
+            <friction material1="Fiberglass" material2="Fiberglass" static="0.5" dynamic="0.2"/>  <!-- 玻璃纤维-玻璃纤维 -->
+            <friction material1="Fiberglass" material2="Aluminium" static="0.5" dynamic="0.2"/>  <!-- 玻璃纤维-铝合金 -->
+            <friction material1="Aluminium" material2="Aluminium" static="0.8" dynamic="0.5"/>  <!-- 铝合金-铝合金 -->
+        </friction_table>
+    </materials>
+
+</scenario>

@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!--
+    This file is part of USV project.
+
+    Author: WYB
+    Email: 854459949@qq.com
+    Year: 2025
+
+    Copyright (C) 2025 Ocean Information and Intelligent Equipment Laboratory
+-->
+<scenario xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- 机器人名称参数，默认为 under_usv -->
+    <xacro:arg name="robot_name" default="under_usv"/>
+
+    <!-- 实例化 USV 机器人模型 -->
+    <xacro:include filename="$(find ocean_simulation_stonefish)/models/usv/under_usv.scn.xacro"/>
+    <xacro:under_usv robot_name="$(arg robot_name)" xyz="0.0 0.0 0.0" rpy="3.1415 0.0 0.0"/>
+
+    <!-- <xacro:include filename="$(find ocean_simulation_stonefish)/models/usv/under_usv_easy.scn.xacro"/>
+    <xacro:under_usv_easy robot_name="$(arg robot_name)" xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/> -->
+   
+    <!-- 环境配置部分 -->
+    <environment>
+        <!-- NED坐标系（北东地），latitude: 纬度，longitude: 经度 -->
+        <ned latitude="41" longitude="-71"/>
+        <!-- 海水参数配置 -->
+        <ocean>
+            <water density = "1031.0" jerlov="0.2"/>  <!-- density: 海水密度，单位：kg/m³， jerlov: 浑浊程度，数字越小越清澈 -->
+            <waves height = "0.0"/>  <!-- height: 波浪高度，单位：米，0.0 表示无波浪 -->
+            <particles enabled = "true"/>  <!-- 粒子效果 true: 启用 -->
+            <current type = "uniform">  <!-- 海流类型：uniform: 均匀流，整个水域流速相同 -->
+                <velocity xyz = "0.0 0.0 0.0"/>  <!-- velocity: 流速向量 -->
+            </current>
+
+            <!-- 喷射海流 -->
+            <!-- <current type="jet">
+                <center xyz="0.0 0.0 3.0"/>
+                <outlet radius="0.2"/>
+                <velocity xyz="0.0 2.0 0.0"/>
+            </current> --> 
+        </ocean>
+
+        <!-- 光照配置 -->
+        <atmosphere>
+            <!-- azimuth: 方位角，单位：度 范围：0-360°，0=北，90=东，180=南，270=西 -->
+            <!-- elevation: 仰角/高度角，单位：度 范围：-90~90°，0=地平线，90=天顶 -->
+            <sun azimuth="50.0" elevation="50.0"/>
+        </atmosphere>
+    </environment>
+
+    <!-- 海底地形 -->
+    <static name="Bottom" type="model">
+        <physical>
+            <mesh filename="$(find ocean_simulation_stonefish)/meshes/flat_terrain.obj" scale="2.0" convex="true"/> <!-- convex = true: 凸体，简化碰撞计算 -->
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </physical>
+        <visual>
+            <mesh filename="$(find ocean_simulation_stonefish)/meshes/flat_terrain.obj" scale="2.0"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+        <material name="Rock"/>  <!--岩石材质-->
+        <look name="Gray"/>  <!-- "Gray": 灰色外观 -->
+        <world_transform xyz="0.0 0.0 40.0" rpy="0.0 0.0 0.0"/> 
+    </static>
+
+    <!-- 水槽 -->
+    <static name="tank" type="model">
+        <physical>
+            <mesh filename="tank.obj" scale="1.0" convex="false"/> <!-- 碰撞网格：水槽模型，非凸体 -->
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </physical>
+        <visual>
+            <mesh filename="tank.obj" scale="1.0"/>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        </visual>
+        <material name="Rock"/>  <!--岩石材质-->
+        <look name="Gray"/>  <!-- "Gray": 灰色外观 -->
+        <world_transform xyz="0.0 0.0 18.0" rpy="3.1415926 0.0 0.0"/>
+    </static>
+
+</scenario>

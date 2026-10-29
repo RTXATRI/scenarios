@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!--
+    This file is part of USV project.
+
+    Author: WYB
+    Email: 854459949@qq.com
+    Year: 2026
+
+    Copyright (C) 2026 Ocean Information and Intelligent Equipment Laboratory
+-->
+<launch>
+    <arg name="usv_namespace" default=""/>
+    <arg name="usv_locked" default="false"/>
+    <arg name="thrust_config" default="T"/>
+    <arg name="vrx_sensors_enabled" default="false"/>
+    <arg name="usv_x" default="0"/>
+    <arg name="usv_y" default="0"/>
+    <arg name="usv_z" default="0.15"/>
+    <arg name="usv_roll" default="0"/>
+    <arg name="usv_pitch" default="0"/>
+    <arg name="usv_yaw" default="0"/>
+    <!-- 无人船模型组 -->
+  
+    <!-- 根据推进器配置确定URDF模型 -->
+    <arg name="h_config" value="$(eval int((thrust_config)=='H'))"/>
+    <arg name="t_config" value="$(eval int((thrust_config)=='T'))"/>
+    <arg name="x_config" value="$(eval int((thrust_config)=='X'))"/>
+    
+    <arg if="$(arg h_config)" name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
+
+    <!-- 加载无人船URDF模型 -->
+    <param name="robot_description"
+        command="$(find xacro)/xacro --inorder '$(arg urdf)'
+        locked:=$(arg usv_locked)             
+        thruster_config:=$(arg thrust_config)
+        vrx_sensors_enabled:=$(arg vrx_sensors_enabled)
+        namespace:=$(arg usv_namespace) "/>
+
+    <!-- 在Gazebo中生成无人船模型 -->
+    <node name="spawn_$(arg usv_namespace)" pkg="gazebo_ros" type="spawn_model"
+        output="screen"
+        args="-x $(arg usv_x) -y $(arg usv_y) -z $(arg usv_z)
+            -R $(arg usv_roll) -P $(arg usv_pitch) -Y $(arg usv_yaw)
+            -urdf -param robot_description -model $(arg usv_namespace)"/>
+
+    <!-- 发布TF变换（静态关节） -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" 
+        name="robot_state_publisher">
+        <param name="tf_prefix" value="$(arg usv_namespace)" />
+    </node>
+
+    <!-- 发布关节状态（用于GPS和IMU的TF变换） -->
+    <node pkg="joint_state_publisher" type="joint_state_publisher" 
+        name="joint_state_publisher">
+        <param name="gui" value="false" />
+    </node>
+
+    <!-- 扩展卡尔曼滤波器（EKF）用于传感器融合 -->
+    <node pkg="robot_localization" type="ekf_localization_node"
+        name="ekf_localization" clear_params="false">
+        <param name="tf_prefix" value="$(arg usv_namespace)" />
+        <param name="sensor_timeout" value="2.0"/>
+        <param name="two_d_mode" value="true"/>
+        <param name="map_frame" value="map"/>
+        <param name="odom_frame" value="$(arg usv_namespace)/odom"/>
+        <param name="base_link_frame" value="$(arg usv_namespace)/base_link"/>
+        <param name="world_frame" value="$(arg usv_namespace)/odom"/>
+        <param name="publish_tf" value="true"/>
+        <param name="frequency" value="60"/>
+        
+        <param name="imu0" value="sensors/imu/imu/data"/>
+        <rosparam param="imu0_config">[false, false, false,
+            false, false, true,
+            false, false, false,
+            false, false, true,
+            true, false, false]</rosparam>
+        <param name="imu0_differential" value="false"/>
+        <param name="imu0_remove_gravitational_acceleration" value="true"/>
+
+        <param name="odom0" value="robot_localization/odometry/gps"/>
+        <rosparam param="odom0_config">[true, true, true,
+            false, false, false,
+            false, false, false,
+            false, false, false,
+            false, false, false]</rosparam>
+        <param name="odom0_differential" value="false"/>
+        <param name="smooth_lagged_data" value="true"/>
+    </node>
+
+    <!-- GPS坐标转换（UTM到地图坐标） -->
+    <node pkg="robot_localization" type="navsat_transform_node"
+        name="navsat_transform" respawn="true" output="screen">      
+        <param name="tf_prefix" value="$(arg usv_namespace)" />
+        <param name="frequency" value="60"/>
+        <param name="magnetic_declination_radians" value="0"/>
+        <param name="broadcast_cartesian_transform" value="true"/>
+        <param name="wait_for_datum" value="false"/>
+        <param name="use_odometry_yaw" value="true"/>
+        <rosparam param="datum">[-33.73, 150.67]</rosparam>
+        <param name="yaw_offset" value="0"/>
+        <param name="publish_filtered_gps" value="true"/>
+        <remap from="gps/fix" to="sensors/gps/gps/fix" />
+    </node>
+
+    <!-- 推进器控制转换节点 -->
+    <node pkg="vrx_gazebo" type="twist2thrust.py" 
+        name="twist_to_thrust" output="screen">
+        <remap from="left_cmd" to="thrusters/left_thrust_cmd"/>
+        <remap from="right_cmd" to="thrusters/right_thrust_cmd"/>
+    </node>
+
+    <!-- 静态TF变换发布器（可选，用于坐标系对齐） -->
+    <node pkg="tf" type="static_transform_publisher" 
+        name="$(arg usv_namespace)_odom_tf"
+        args="0 0 0 0 0 0 1 map $(arg usv_namespace)/odom 100" />
+
+</launch>
+
+<!-- ================================================================ -->
+<!-- 可重用的无人船（WAM-V）放置模块                                -->
+<!-- 使用方法：在其他launch文件中include本段代码                     -->
+<!-- 确保已包含gazebo_ros和相关依赖包                               -->
+<!-- ================================================================ -->
