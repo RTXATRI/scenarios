@@ -1,0 +1,50 @@
+# Catkin workspaces and local CMake build artifacts
+build/
+devel/
+install/
+build_isolated/
+devel_isolated/
+install_isolated/
+.catkin_tools/
+catkin_generated/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+compile_commands.json
+/Makefile
+/*/Makefile
+
+# Python caches and local virtual environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.cache/
+.venv/
+venv/
+
+# ROS/Gazebo runtime output; put local videos and captures in recordings/
+log/
+logs/
+recordings/
+.ros/
+.gazebo/
+*.bag
+*.bag.active
+*.log
+*.tmp
+
+# Editor and operating system files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+
+# Keep simulation assets trackable: meshes (including *.obj), textures,
+# materials/shaders, *.blend/*.pdn, model configs, SDF/Jinja/world/Xacro files,
+# and existing upstream *.last_generated snapshots. Videos and CSV files
+# outside recordings/ remain trackable for documentation and test fixtures.

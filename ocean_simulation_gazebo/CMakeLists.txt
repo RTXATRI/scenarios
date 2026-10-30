@@ -192,6 +192,15 @@ include_directories(
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
+install(DIRECTORY launch models worlds
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  PATTERN "*:Zone.Identifier" EXCLUDE
+)
+
+install(FILES docs/uav_camera_model.md
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/docs
+)
+
 #############
 ## Testing ##
 #############

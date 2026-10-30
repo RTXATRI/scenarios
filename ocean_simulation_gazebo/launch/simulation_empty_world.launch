@@ -2,20 +2,24 @@
 <!--
     Empty-world UAV simulation.
 
-    Starts PX4 SITL, Gazebo empty world, an Iris UAV with a downward FPV
-    camera, and a ground AprilTag marker. MAVROS and USV are intentionally
+    Starts PX4 SITL, Gazebo empty world, the lite_quad_uav downward-camera model,
+    and a ground AprilTag marker. MAVROS and USV are intentionally
     not started by this launch file.
 -->
 <launch>
     <!-- Keep empty-world Gazebo model lookup local and deterministic. -->
     <env name="GAZEBO_MODEL_PATH"
-         value="$(find ocean_simulation_gazebo)/models/vehicle:$(find ocean_simulation_gazebo)/models/sensor:$(find ocean_simulation_gazebo)/models/other:$(find ocean_simulation_gazebo)/models/px4_default:$(optenv GAZEBO_MODEL_PATH)"/>
+         value="$(find ocean_simulation_gazebo)/models/vehicle:$(find ocean_simulation_gazebo)/models/sensor:$(find ocean_simulation_gazebo)/models/other:$(find px4)/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models:$(find ocean_simulation_gazebo)/models/px4_default:$(optenv GAZEBO_MODEL_PATH)"/>
+    <env name="GAZEBO_PLUGIN_PATH"
+         value="$(find px4)/build/px4_sitl_default/build_gazebo-classic:$(optenv GAZEBO_PLUGIN_PATH)"/>
+    <env name="LD_LIBRARY_PATH"
+         value="$(find px4)/build/px4_sitl_default/build_gazebo-classic:$(optenv LD_LIBRARY_PATH)"/>
     <env name="GAZEBO_MODEL_DATABASE_URI" value="file://$(find ocean_simulation_gazebo)/models"/>
 
     <!-- UAV settings -->
     <arg name="uav_namespace" default="uav_1"/>
     <arg name="uav_vehicle" default="iris"/>
-    <arg name="uav_sdf" default="$(find ocean_simulation_gazebo)/models/vehicle/iris_fusion/iris_fusion.sdf"/>
+    <arg name="uav_sdf" default="$(find ocean_simulation_gazebo)/models/vehicle/lite_quad_uav/model.sdf"/>
     <arg name="uav_x" default="0"/>
     <arg name="uav_y" default="0"/>
     <arg name="uav_z" default="0.2"/>

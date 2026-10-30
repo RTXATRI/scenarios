@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="lite_quad_uav">
+    <include>
+      <uri>model://lite_quad_uav/base</uri>
+      <name>iris</name>
+    </include>
+
+    <include>
+      <uri>model://lite_quad_uav/camera</uri>
+      <name>fpv_cam</name>
+      <!-- Preserve the existing assembly's zero translation and downward view. -->
+      <pose>0 0 0 0 1.57079632679 0</pose>
+    </include>
+
+    <joint name="camera_mount_joint" type="fixed">
+      <parent>iris::base_link</parent>
+      <child>fpv_cam::link</child>
+    </joint>
+  </model>
+</sdf>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="verbose" default="false"/>
+  <arg name="uav_namespace" default="uav_1"/>
+  <arg name="uav_z" default="0.3"/>
+  <arg name="px4_dir" default="$(find px4)"/>
+
+  <!-- Resource names are independent of the PX4 airframe configuration. -->
+  <env name="PX4_SIM_MODEL" value="gazebo-classic_iris"/>
+  <env name="GAZEBO_MODEL_PATH"
+       value="$(find ocean_simulation_gazebo)/models/vehicle:$(arg px4_dir)/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models:$(optenv GAZEBO_MODEL_PATH)"/>
+  <env name="GAZEBO_PLUGIN_PATH"
+       value="$(arg px4_dir)/build/px4_sitl_default/build_gazebo-classic:$(optenv GAZEBO_PLUGIN_PATH)"/>
+  <env name="LD_LIBRARY_PATH"
+       value="$(arg px4_dir)/build/px4_sitl_default/build_gazebo-classic:$(optenv LD_LIBRARY_PATH)"/>
+
+  <!-- -d disables the interactive PX4 console; no flight task is started. -->
+  <node name="sitl" pkg="px4" type="px4" output="screen" required="true"
+        args="$(arg px4_dir)/build/px4_sitl_default/etc -s etc/init.d-posix/rcS -d"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find ocean_simulation_gazebo)/worlds/extra/uav_camera_test.world"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="verbose" value="$(arg verbose)"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="server_required" value="true"/>
+  </include>
+
+  <node name="vehicle_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-sdf -file $(find ocean_simulation_gazebo)/models/vehicle/lite_quad_uav/model.sdf -model $(arg uav_namespace) -x 0 -y 0 -z $(arg uav_z)"/>
+</launch>

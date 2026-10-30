@@ -14,7 +14,7 @@
     <arg name="uav_namespace" default="uav_1"/>  <!-- 无人机命名空间 -->
     <arg name="est" default="ekf2"/>  <!-- 使用的滤波器 --> 
     <arg name="uav_vehicle" default="iris"/>  <!-- 飞行器类型 -->
-    <arg name="uav_sdf" default="$(find ocean_simulation_gazebo)/models/vehicle/iris_fusion/iris_fusion.sdf"/>  <!-- 要加载的飞行器模型文件 -->
+    <arg name="uav_sdf" default="$(find ocean_simulation_gazebo)/models/vehicle/lite_quad_uav/model.sdf"/>  <!-- 带下视相机的 lite_quad_uav 模型，实例名仍为 uav_1 -->
     <arg name="uav_x" default="-584.75"/>  <!-- X坐标 (米) -->
     <arg name="uav_y" default="177.00"/>  <!-- Y坐标 (米) -->
     <arg name="uav_z" default="1.75"/>  <!-- Z坐标 (米) -->
@@ -50,6 +50,14 @@
     <arg name="fcu_url" default="udp://:14540@localhost:14557"/>  <!-- 飞控通信链接 -->
     <arg name="respawn_mavros" default="false"/>  <!-- 进程管理 -->
 
+
+    <!-- Model resources belong to this simulation package; PX4 keeps its iris airframe. -->
+    <env name="GAZEBO_MODEL_PATH"
+         value="$(find ocean_simulation_gazebo)/models/vehicle:$(find px4)/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models:$(optenv GAZEBO_MODEL_PATH)"/>
+    <env name="GAZEBO_PLUGIN_PATH"
+         value="$(find px4)/build/px4_sitl_default/build_gazebo-classic:$(optenv GAZEBO_PLUGIN_PATH)"/>
+    <env name="LD_LIBRARY_PATH"
+         value="$(find px4)/build/px4_sitl_default/build_gazebo-classic:$(optenv LD_LIBRARY_PATH)"/>
 
     <!-- ========== 启动PX4 SITL CORE ========== -->
     <include file="$(find ocean_simulation_gazebo)/launch/core/px4_sitl_core.launch">
