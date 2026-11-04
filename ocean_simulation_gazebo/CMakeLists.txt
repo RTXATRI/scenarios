@@ -197,8 +197,12 @@ install(DIRECTORY launch models worlds
   PATTERN "*:Zone.Identifier" EXCLUDE
 )
 
-install(FILES docs/uav_camera_model.md
+install(FILES docs/uav_camera_model.md docs/map1_worlds.md
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/docs
+)
+
+install(FILES docs/images/map1_wamv.png
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/docs/images
 )
 
 #############

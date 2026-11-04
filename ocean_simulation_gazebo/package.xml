@@ -64,6 +64,9 @@
   <exec_depend>px4</exec_depend>
   <exec_depend>mavros</exec_depend>
   <exec_depend>wamv_gazebo</exec_depend>
+  <exec_depend>wamv_description</exec_depend>
+  <exec_depend>hector_gazebo_plugins</exec_depend>
+  <exec_depend>velodyne_gazebo_plugins</exec_depend>
   <exec_depend>vrx_gazebo</exec_depend>
   <exec_depend>usv_gazebo_plugins</exec_depend>
   <exec_depend>wave_gazebo</exec_depend>
@@ -77,6 +80,6 @@
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
-    <gazebo_ros gazebo_model_path="${prefix}/models/vehicle"/>
+    <gazebo_ros gazebo_model_path="${prefix}/models/vehicle:${prefix}/models/other"/>
   </export>
 </package>

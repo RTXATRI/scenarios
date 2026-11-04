@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!-- Map1 wave field and water rendering; keep the instance name ocean_waves for buoyancy plugins. -->
+<sdf version="1.7">
+  <model name="ocean_waves">
+    <static>1</static>
+    <plugin name="ocean_waves::wavefield_entity" filename="libWavefieldModelPlugin.so">
+      <static>0</static>
+      <update_rate>30</update_rate>
+      <size>1000 1000</size>
+      <cell_count>50 50</cell_count>
+      <wave>
+        <model>PMS</model>
+        <period>5</period>
+        <number>3</number>
+        <scale>2.5</scale>
+        <gain>0.1</gain>
+        <direction>1.0 0.0</direction>
+        <angle>0.4</angle>
+        <tau>2.0</tau>
+        <amplitude>0.0</amplitude>
+        <steepness>0.0</steepness>
+      </wave>
+    </plugin>
+    <link name="ocean_waves_link">
+      <visual name="ocean_waves_visual">
+        <plugin name="ocean_waves_visual_plugin" filename="libWavefieldVisualPlugin.so">
+          <enableRtt>1</enableRtt>
+          <rttNoise>0.1</rttNoise>
+          <refractOpacity>0.2</refractOpacity>
+          <reflectOpacity>0.2</reflectOpacity>
+          <wave>
+            <model>PMS</model>
+            <period>5</period>
+            <number>3</number>
+            <scale>2.5</scale>
+            <gain>0.1</gain>
+            <direction>1.0 0.0</direction>
+            <angle>0.4</angle>
+            <tau>2.0</tau>
+            <amplitude>0.0</amplitude>
+            <steepness>0.0</steepness>
+          </wave>
+        </plugin>
+        <geometry>
+          <mesh>
+            <scale>2.5 2.5 1</scale>
+            <uri>model://ocean_waves/meshes/mesh.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://ocean_waves/materials/scripts/waves.material</uri>
+            <name>WaveSim/GerstnerWaves</name>
+          </script>
+        </material>
+        <laser_retro>-1</laser_retro>
+      </visual>
+      <visual name="ocean_waves_below_visual">
+        <pose>0 0 -0.05 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>2.5 2.5 1</scale>
+            <uri>model://ocean_waves/meshes/mesh_below.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://ocean_waves/materials/scripts/waves.material</uri>
+            <name>WaveSim/GerstnerWaves</name>
+          </script>
+        </material>
+        <laser_retro>-1</laser_retro>
+      </visual>
+      <self_collide>0</self_collide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+    </link>
+  </model>
+</sdf>

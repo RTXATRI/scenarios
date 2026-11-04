@@ -2,11 +2,20 @@
 <launch>
     <!-- ========== 最小化Gazebo配置 ========== -->
     <!-- 要加载的Gazebo世界文件 -->
-    <arg name="world" default="$(find ocean_simulation_gazebo)/worlds/px4-default/empty.world" />
-    <!-- 关闭GUI以加快启动速度 -->
+    <arg name="world" default="$(find ocean_simulation_gazebo)/worlds/usv_path_planning/map1_3.world" />
+    <!-- 保留原有参数接口；world 也可显式指定其他地图1文件。 -->
     <arg name="gui" default="true" />
     <arg name="verbose" default="false"/>
     <arg name="paused" default="false"/>
+
+    <!-- Reuse the original VRX/WAM-V meshes without machine-specific paths. -->
+    <env name="GAZEBO_MODEL_PATH"
+         value="$(find ocean_simulation_gazebo)/models/vehicle:$(find ocean_simulation_gazebo)/models/other:$(find wamv_description)/models:$(find wamv_gazebo)/models:$(find vrx_gazebo)/models:$(find wave_gazebo)/world_models:$(find wave_gazebo)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+    <env name="GAZEBO_RESOURCE_PATH"
+         value="$(find vrx_gazebo):$(find wave_gazebo):$(optenv GAZEBO_RESOURCE_PATH)"/>
+    <!-- Sourced catkin overlays and system ROS already provide their lib dirs. -->
+    <env name="GAZEBO_PLUGIN_PATH"
+         value="$(optenv LD_LIBRARY_PATH):$(optenv GAZEBO_PLUGIN_PATH)"/>
 
     <!-- ========== 启动Gazebo ========== -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -15,7 +24,6 @@
         <arg name="paused" value="$(arg paused)"/>
         <arg name="use_sim_time" value="true"/>
         <arg name="gui" value="$(arg gui)" />
-        <!-- 关闭物理引擎渲染以提高性能 -->
-        <arg name="physics" default="ode"/>
+        <arg name="physics" value="ode"/>
     </include>
 </launch>
