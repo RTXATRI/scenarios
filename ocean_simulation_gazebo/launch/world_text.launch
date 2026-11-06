@@ -2,8 +2,8 @@
 <launch>
     <!-- ========== 最小化Gazebo配置 ========== -->
     <!-- 要加载的Gazebo世界文件 -->
-    <arg name="world" default="$(find ocean_simulation_gazebo)/worlds/usv_path_planning/map1_3.world" />
-    <!-- 保留原有参数接口；world 也可显式指定其他地图1文件。 -->
+    <arg name="world" default="$(find ocean_simulation_gazebo)/worlds/usv_path_planning/map1-3.world" />
+    <!-- 保留原有参数接口；world 也可显式指定地图1或地图2文件。 -->
     <arg name="gui" default="true" />
     <arg name="verbose" default="false"/>
     <arg name="paused" default="false"/>

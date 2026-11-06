@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="world" default="$(find ocean_simulation_gazebo)/worlds/uav_usv_coop/map1.world"/>
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="false"/>
+  <arg name="verbose" default="false"/>
+  <arg name="usv_x" default="-570"/>
+  <arg name="usv_y" default="167"/>
+  <arg name="usv_z" default="0.1"/>
+  <arg name="usv_roll" default="0"/>
+  <arg name="usv_pitch" default="0"/>
+  <arg name="usv_yaw" default="1"/>
+  <arg name="uav_x" default="-584.75"/>
+  <arg name="uav_y" default="177"/>
+  <arg name="uav_z" default="1.75"/>
+  <arg name="uav_roll" default="0"/>
+  <arg name="uav_pitch" default="0"/>
+  <arg name="uav_yaw" default="0"/>
+  <arg name="interactive" default="false"/>
+  <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
+  <arg name="gcs_url" default=""/>
+
+  <include file="$(find ocean_simulation_gazebo)/launch/core/gazebo_world.launch">
+    <arg name="world" value="$(arg world)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="verbose" value="$(arg verbose)"/>
+    <arg name="with_px4" value="true"/>
+  </include>
+  <include file="$(find ocean_simulation_gazebo)/launch/core/wamv_spawn.launch">
+    <arg name="usv_x" value="$(arg usv_x)"/>
+    <arg name="usv_y" value="$(arg usv_y)"/>
+    <arg name="usv_z" value="$(arg usv_z)"/>
+    <arg name="usv_roll" value="$(arg usv_roll)"/>
+    <arg name="usv_pitch" value="$(arg usv_pitch)"/>
+    <arg name="usv_yaw" value="$(arg usv_yaw)"/>
+  </include>
+  <include file="$(find ocean_simulation_gazebo)/launch/core/uav_spawn.launch">
+    <arg name="uav_x" value="$(arg uav_x)"/>
+    <arg name="uav_y" value="$(arg uav_y)"/>
+    <arg name="uav_z" value="$(arg uav_z)"/>
+    <arg name="uav_roll" value="$(arg uav_roll)"/>
+    <arg name="uav_pitch" value="$(arg uav_pitch)"/>
+    <arg name="uav_yaw" value="$(arg uav_yaw)"/>
+  </include>
+  <include file="$(find ocean_simulation_gazebo)/launch/core/px4_sitl_core.launch">
+    <arg name="vehicle" value="iris"/>
+    <arg name="interactive" value="$(arg interactive)"/>
+  </include>
+  <group ns="uav_1">
+    <include file="$(find mavros)/launch/px4.launch">
+      <arg name="fcu_url" value="$(arg fcu_url)"/>
+      <arg name="gcs_url" value="$(arg gcs_url)"/>
+    </include>
+  </group>
+</launch>

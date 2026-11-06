@@ -1,10 +1,6 @@
 <?xml version="1.0"?>
-<!-- 基础的地图模板，可以用于生成实际的.world地图 -->
+<!-- 地图1无障碍环境模板；显式生成 .world，机器人位姿通过 Demo 的 launch 参数指定。 -->
 <sdf xmlns:xacro="http://www.ros.org/wiki/xacro" version="1.7">
-  <xacro:arg name="boat_x" default="-570" />
-  <xacro:arg name="boat_y" default="167" />
-  <xacro:arg name="boat_z" default="0.1" />
-  <xacro:arg name="boat_yaw" default="1" />
   <world name="robotx_example_course">
     <scene>
       <sky>
@@ -125,11 +121,6 @@
       <real_time_update_rate>1000</real_time_update_rate>
     </physics>
     <wind />
-    <include>
-      <uri>model://wamv</uri>
-      <name>wamv</name>
-      <pose>$(arg boat_x) $(arg boat_y) $(arg boat_z) 0 0 $(arg boat_yaw)</pose>
-    </include>
     <include>
       <uri>model://dock_2018_dynamic</uri>
       <name>robotx_dock_2018</name>

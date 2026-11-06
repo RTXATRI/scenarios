@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- World-frame position in metres; roll, pitch and yaw in radians. -->
+  <arg name="usv_x" default="-570"/>
+  <arg name="usv_y" default="167"/>
+  <arg name="usv_z" default="0.1"/>
+  <arg name="usv_roll" default="0"/>
+  <arg name="usv_pitch" default="0"/>
+  <arg name="usv_yaw" default="1"/>
+
+  <!-- Empty robot_namespace preserves the SDF's existing /wamv topic and frame configuration. -->
+  <node name="spawn_wamv" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-sdf -file '$(find ocean_simulation_gazebo)/models/vehicle/wamv/model.sdf'
+              -model wamv -robot_namespace '' -reference_frame world
+              -x $(arg usv_x) -y $(arg usv_y) -z $(arg usv_z)
+              -R $(arg usv_roll) -P $(arg usv_pitch) -Y $(arg usv_yaw)"/>
+</launch>

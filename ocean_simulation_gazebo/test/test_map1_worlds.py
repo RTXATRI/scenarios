@@ -15,18 +15,18 @@ import rospkg
 
 PACKAGE = Path(__file__).resolve().parents[1]
 WORLDS = PACKAGE / "worlds/usv_path_planning"
-MAPS = ("地图1-无障碍.world", "地图1-静态未知.world", "map1_3.world")
+MAPS = ("map1-1.world", "map1-2.world", "map1-3.world")
 COMMON_NAMES = {
     "sydneyregatta", "post_0", "post_1", "post_2", "antenna",
     "ground_station_0", "ground_station_1", "ground_station_2",
-    "blue_projectile", "ocean_waves", "wamv", "robotx_dock_2018",
+    "blue_projectile", "ocean_waves", "robotx_dock_2018",
     "robotx_dock_2022",
 } | {"robotx_dock_2018_" + str(i) for i in range(7)} | {
     "robotx_dock_2022_" + str(i) for i in range(3)
 }
 OBSTACLES = {
-    "地图1-无障碍.world": {},
-    "地图1-静态未知.world": {
+    "map1-1.world": {},
+    "map1-2.world": {
         "custom_dock_block_1": (-556.5, 185, 0.5),
         "custom_dock_block_2": (-529, 208.5, 0.5),
         "custom_dock_block_3": (-555.7, 216.2, 0.5),
@@ -34,7 +34,7 @@ OBSTACLES = {
         "custom_dock_block_5": (-547.5, 234.5, 1.5),
         "custom_dock_block_6": (-516, 234.5, 1.5),
     },
-    "map1_3.world": {
+    "map1-3.world": {
         "custom_dock_block_1": (-556.5, 185, 0.5),
         "custom_dock_block_4": (-562, 218.8, 0.5),
         "custom_dock_block_6": (-516, 234.5, 1.5),
@@ -67,9 +67,7 @@ class Map1Tests(unittest.TestCase):
                 includes = {x.findtext("name"): x for x in world.findall("include")}
                 self.assertEqual(set(includes), COMMON_NAMES | set(OBSTACLES[name]))
                 self.assertEqual(len(includes), len(world.findall("include")))
-                self.assertEqual(includes["wamv"].findtext("uri"), "model://wamv")
-                self.assertEqual(tuple(map(float, includes["wamv"].findtext("pose").split())),
-                                 (-570, 167, 0.1, 0, 0, 1))
+                self.assertNotIn("wamv", includes)
                 for key, position in OBSTACLES[name].items():
                     self.assertEqual(tuple(map(float, includes[key].findtext("pose").split()[:3])), position)
                 for key in COMMON_NAMES:
@@ -131,16 +129,12 @@ class Map1Tests(unittest.TestCase):
                     for image in ET.parse(found).findall(".//{*}library_images/{*}image/{*}init_from"):
                         self.assertTrue((found.parent / image.text).is_file(), image.text)
 
-    def test_xacro_default_and_pose_arguments(self):
-        template = WORLDS / "地图1-无障碍.world.xacro"
+    def test_xacro_generates_environment_only(self):
+        template = WORLDS / "map1_base.world.xacro"
         default = ET.fromstring(subprocess.check_output(["xacro", str(template)]))
         self.assertEqual(semantic(default), semantic(ET.parse(WORLDS / MAPS[0]).getroot()))
-        moved = ET.fromstring(subprocess.check_output([
-            "xacro", str(template), "boat_x:=-580", "boat_y:=170",
-            "boat_z:=0.2", "boat_yaw:=0.5",
-        ]))
-        pose = moved.find("world/include[name='wamv']/pose").text
-        self.assertEqual(tuple(map(float, pose.split())), (-580, 170, 0.2, 0, 0, 0.5))
+        self.assertIsNone(default.find("world/include[name='wamv']"))
+        self.assertFalse(ET.parse(template).getroot().findall("{http://www.ros.org/wiki/xacro}arg"))
 
 
 if __name__ == "__main__":

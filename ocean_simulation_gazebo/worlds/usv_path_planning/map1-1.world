@@ -122,11 +122,6 @@
     </physics>
     <wind />
     <include>
-      <uri>model://wamv</uri>
-      <name>wamv</name>
-      <pose>-570 167 0.1 0 -0 1</pose>
-    </include>
-    <include>
       <uri>model://dock_2018_dynamic</uri>
       <name>robotx_dock_2018</name>
       <pose>-568.305 196.321 0 0 -0 0</pose>

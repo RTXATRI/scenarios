@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="world"/>
+  <arg name="gui" default="true"/>
+  <arg name="paused" default="false"/>
+  <arg name="verbose" default="false"/>
+  <arg name="with_px4" default="false"/>
+
+  <arg name="model_roots"
+       value="$(find ocean_simulation_gazebo)/models/vehicle:$(find ocean_simulation_gazebo)/models/other:$(find wamv_description)/models:$(find wamv_gazebo)/models:$(find vrx_gazebo)/models:$(find wave_gazebo)/world_models:$(find wave_gazebo)/models"/>
+  <!-- Only the cooperative demo resolves PX4. Its GPS model must precede WAM-V's mesh-only gps directory. -->
+  <arg if="$(arg with_px4)" name="px4_models"
+       value="$(find px4)/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models:"/>
+  <arg unless="$(arg with_px4)" name="px4_models" value=""/>
+  <arg if="$(arg with_px4)" name="px4_plugins"
+       value="$(find px4)/build/px4_sitl_default/build_gazebo-classic:"/>
+  <arg unless="$(arg with_px4)" name="px4_plugins" value=""/>
+
+  <env name="GAZEBO_MODEL_PATH"
+       value="$(arg px4_models)$(arg model_roots):$(optenv GAZEBO_MODEL_PATH)"/>
+  <env name="GAZEBO_RESOURCE_PATH"
+       value="$(find vrx_gazebo):$(find wave_gazebo):$(optenv GAZEBO_RESOURCE_PATH)"/>
+  <env name="GAZEBO_PLUGIN_PATH"
+       value="$(arg px4_plugins)$(optenv LD_LIBRARY_PATH):$(optenv GAZEBO_PLUGIN_PATH)"/>
+  <env name="LD_LIBRARY_PATH" value="$(arg px4_plugins)$(optenv LD_LIBRARY_PATH)"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="verbose" value="$(arg verbose)"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="physics" value="ode"/>
+    <arg name="server_required" value="true"/>
+  </include>
+</launch>

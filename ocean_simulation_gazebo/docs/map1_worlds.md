@@ -1,18 +1,18 @@
 # 地图1场景与 WAM-V
 
-地图1系列使用普通 SDF 世界文件，公共模型通过 `<include>` 引用。地图文件只描述环境参数、实例名称、位置和附加障碍物；船体和海浪参数集中维护。
+地图1系列使用普通 SDF 世界文件，公共环境模型通过 `<include>` 引用。地图文件只描述环境参数、环境模型布局和附加障碍物；无人船由 `demo_usv.launch` 放置，详见 [Demo 使用说明](demo_launches.md)。
 
 以下为修复后的 Gazebo 实际渲染截图，使用临时观察相机拍摄；该相机不属于地图定义。
 
 ![修复后的 WAM-V 船体与附件](images/map1_wamv.png)
 
-| 地图 | 行数 | 附加障碍物 | Gazebo 顶层模型数 |
+| 地图 | 行数 | 附加障碍物 | 环境模型数 |
 | --- | ---: | --- | ---: |
-| `地图1-无障碍.world` | 190 | 无 | 23 |
-| `地图1-静态未知.world` | 220 | 6 个固定平台 | 29 |
-| `map1_3.world` | 215 | 3 个固定平台、2 个浮标 | 28 |
+| `map1-1.world` | 185 | 无 | 22 |
+| `map1-2.world` | 215 | 6 个固定平台 | 28 |
+| `map1-3.world` | 210 | 3 个固定平台、2 个浮标 | 27 |
 
-“无障碍”指没有附加测试障碍物，岸线、原有的 12 个码头及地面站仍然保留。地图2系列没有修改。
+“无障碍”指没有附加测试障碍物，岸线、原有的 12 个码头及地面站仍然保留。地图2系列复用相同的共用模型，详见 [地图2说明](map2_worlds.md)。
 
 ## 启动
 
@@ -34,12 +34,12 @@ sudo apt-get install --no-install-recommends \
 加载无障碍版：
 
 ```bash
-roslaunch ocean_simulation_gazebo world_text.launch \
-  world:="$(rospack find ocean_simulation_gazebo)/worlds/usv_path_planning/地图1-无障碍.world" \
+roslaunch ocean_simulation_gazebo demo_usv.launch \
+  world:="$(rospack find ocean_simulation_gazebo)/worlds/usv_path_planning/map1-1.world" \
   verbose:=true
 ```
 
-将文件名替换为其他地图即可切换。`world_text.launch` 的默认文件仍是 `map1_3.world`，并保留 `gui`、`paused`、`verbose` 参数。世界文件自己创建唯一的 `wamv`，此入口不再额外生成船。
+将文件名替换为其他地图即可切换。Demo 默认加载 `map1-3.world`，支持 `world`、`gui`、`paused`、`verbose` 和六个 `usv_*` 位姿参数。世界文件不含无人船，Demo 只生成一个 `wamv`；`world_text.launch` 用于不带机器人的地图预览。
 
 GUI 保留原地图的总览视角；查看船体细节时，可在模型列表中定位 `wamv` 并聚焦。
 
@@ -67,38 +67,27 @@ cp -an "$map1_prefix/opt/ros/noetic/lib/." "$map1_ws/devel/lib/"
 
 ## 基础 Xacro
 
-`地图1-无障碍.world.xacro` 是可显式生成的基础示例，默认结果与普通无障碍版等价，提供四个参数：
-
-| 参数 | 默认值 | 单位 |
-| --- | ---: | --- |
-| `boat_x` | -570 | 米 |
-| `boat_y` | 167 | 米 |
-| `boat_z` | 0.1 | 米 |
-| `boat_yaw` | 1 | 弧度 |
+`map1_base.world.xacro` 显式生成与无障碍版等价的纯环境。原 `boat_*` 参数已移除，船的位置和姿态改由 Demo 的 `usv_*` 参数指定。
 
 ```bash
 rosrun xacro xacro \
-  "$(rospack find ocean_simulation_gazebo)/worlds/usv_path_planning/地图1-无障碍.world.xacro" \
+  "$(rospack find ocean_simulation_gazebo)/worlds/usv_path_planning/map1_base.world.xacro" \
   -o /tmp/map1-example.world
 
-# 例如调整出生位置和朝向
-rosrun xacro xacro \
-  "$(rospack find ocean_simulation_gazebo)/worlds/usv_path_planning/地图1-无障碍.world.xacro" \
-  boat_x:=-580 boat_y:=170 boat_z:=0.2 boat_yaw:=0.5 \
-  -o /tmp/map1-moved.world
-
-roslaunch ocean_simulation_gazebo world_text.launch world:=/tmp/map1-moved.world
+# 在生成的环境中放船，并调整出生位置和朝向
+roslaunch ocean_simulation_gazebo demo_usv.launch world:=/tmp/map1-example.world \
+  usv_x:=-580 usv_y:=170 usv_z:=0.2 usv_yaw:=0.5
 ```
 
 启动普通 `.world` 时不会执行 Xacro，也不会覆盖现有地图。修改无障碍版公共布局后，同步基础模板，并运行下面的等价性测试。
 
 ## 模型维护
 
-- `models/vehicle/wamv/` 保存原船的 13 个 link、12 个 joint、四推进器、全部传感器和插件，船的位置由世界文件决定。
+- `models/vehicle/wamv/` 保存原船的 13 个 link、12 个 joint、四推进器、全部传感器和插件，船的位置由 launch 决定。
 - 船内的 23 处旧绝对路径已替换为 `model://`，复用 `wamv_description`、`wamv_gazebo`、`vrx_gazebo` 的 11 个网格及原纹理。
 - `models/other/map1_ocean/` 保留原海浪及渲染参数，实例名必须保持 `ocean_waves`，供浮力和船体动力学插件查找。
 - 2018 码头复用 VRX 的 `dock_2018_dynamic`；2022 码头通过包内 `map1_dock_2022` 复用原动态基座和标牌，修正原模板不存在的连接点，连接至实际存在的基座脊柱块。标牌位置不变，第三方模型文件不变。
-- 地图不再含运行快照 `<state>`；每次从 `<include>/<pose>` 指定的初始位置开始。船的默认位姿为 `-570 167 0.1 0 0 1`。
+- 地图不再含运行快照 `<state>`；环境模型从各自 `<include>/<pose>` 指定的位置开始。Demo 中船的默认位姿为 `-570 167 0.1 0 0 1`，可通过 launch 参数覆盖。
 
 ## 控制和传感器接口
 
@@ -136,14 +125,16 @@ python3 -m unittest discover -s test -p 'test_map1_worlds.py' -v
 # 先加载 Gazebo 的环境，再检查 SDF；模型搜索路径与 launch 保持一致
 source /usr/share/gazebo/setup.sh
 export GAZEBO_MODEL_PATH="$(rospack find ocean_simulation_gazebo)/models/vehicle:$(rospack find ocean_simulation_gazebo)/models/other:$(rospack find wamv_description)/models:$(rospack find wamv_gazebo)/models:$(rospack find vrx_gazebo)/models:$(rospack find wave_gazebo)/world_models:$(rospack find wave_gazebo)/models:$GAZEBO_MODEL_PATH"
-gz sdf -k worlds/usv_path_planning/地图1-无障碍.world
-gz sdf -k worlds/usv_path_planning/地图1-静态未知.world
-gz sdf -k worlds/usv_path_planning/map1_3.world
+gz sdf -k worlds/usv_path_planning/map1-1.world
+gz sdf -k worlds/usv_path_planning/map1-2.world
+gz sdf -k worlds/usv_path_planning/map1-3.world
 ```
 
-回归测试覆盖布局和障碍物差异、船体与控制接口、资源和纹理可解析性、Xacro 默认等价性及位置参数，以及 2022 码头的连接引用。
+回归测试覆盖纯环境布局和障碍物差异、共用船体与控制接口、资源和纹理可解析性、Xacro 默认等价性，以及 2022 码头的连接引用。Demo 参数及运行检查见 [Demo 使用说明](demo_launches.md)。
 
-## 本次验证记录（2026-11-04）
+## 地图模块化时的验证记录（2026-11-04）
+
+以下记录来自机器人放置迁移前的地图模块化版本；当前世界文件已移除船，最新启动方式及实测结果见 [Demo 使用说明](demo_launches.md)。
 
 在独立 ROS/Gazebo 端口逐张启动三份最终地图，使用实际 OpenGL 渲染，验证完毕后关闭测试进程。船体和附件显示正常，三份地图均没有资源、插件或码头关节加载失败。
 
@@ -151,10 +142,10 @@ gz sdf -k worlds/usv_path_planning/map1_3.world
 | --- | ---: | ---: | ---: | ---: | ---: |
 | 无障碍 | 23 | -0.151 | 1.019 | 0.258 | 0.041 |
 | 静态未知 | 29 | -0.118 | 1.020 | 0.301 | 0.077 |
-| `map1_3` | 28 | -0.122 | 1.019 | 0.300 | 0.068 |
+| `map1-3` | 28 | -0.122 | 1.019 | 0.300 | 0.068 |
 
 运动测试向四个推进器持续发送 `0.2` 命令 6 个仿真秒，随后持续发送零命令 8 个仿真秒。基座坐标位于水面以下属于该船原始几何和浮力模型的正常结果。
 
 全部地图的三路相机及 CameraInfo 实测约 30.30 Hz，GPS/IMU 约 14.93 Hz，16 线点云约 10 Hz，声学 pinger 约 1 Hz，均按消息时间戳计算。检查了非空图像、相机标定、有限点云坐标、有效 GPS 数值、归一化 IMU 四元数和有限声学量测。
 
-5 项自动回归检查通过；三份世界及共用模型通过 Gazebo SDF 检查。基础 Xacro 的默认输出与无障碍版语义等价，修改位置参数后结果正确。CMake 配置与临时前缀安装通过，地图、模型、模板、文档和截图均正确安装。地图2文件与修改前的 SHA-256 一致。
+5 项自动回归检查通过；三份世界及共用模型通过 Gazebo SDF 检查。基础 Xacro 的默认输出与无障碍版语义等价，修改位置参数后结果正确。CMake 配置与临时前缀安装通过，地图、模型、模板、文档和截图均正确安装。以上为地图1修复时的验证记录；地图2的后续修复及验证结果见 [地图2说明](map2_worlds.md)。

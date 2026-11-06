@@ -3,6 +3,8 @@
 模型、网格、测试世界和仿真入口统一归本包维护。`ocean` 是实验室名称。
 控制与感知程序仍在 `lite_quad_uav` 包；本包加载模型不需要启动该控制包。
 
+当前船机协同场景使用 `demo_uav_usv.launch`，出生位姿由 launch 参数指定，见 [Demo 使用说明](demo_launches.md)。下文旧测试入口的命令及验证记录保留用于追溯；本次没有修复它们引用的已删除 `worlds/extra` 文件。
+
 ## 环境与启动
 
 使用已构建的 ROS Noetic、依赖工作空间和 PX4 Gazebo Classic。以下示例在

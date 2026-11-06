@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- World-frame position in metres; roll, pitch and yaw in radians. -->
+  <arg name="uav_x" default="-584.75"/>
+  <arg name="uav_y" default="177"/>
+  <arg name="uav_z" default="1.75"/>
+  <arg name="uav_roll" default="0"/>
+  <arg name="uav_pitch" default="0"/>
+  <arg name="uav_yaw" default="0"/>
+
+  <node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-sdf -file '$(find ocean_simulation_gazebo)/models/vehicle/lite_quad_uav/model.sdf'
+              -model uav_1 -reference_frame world
+              -x $(arg uav_x) -y $(arg uav_y) -z $(arg uav_z)
+              -R $(arg uav_roll) -P $(arg uav_pitch) -Y $(arg uav_yaw)"/>
+</launch>

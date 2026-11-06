@@ -103,5 +103,4 @@
         args="-sdf -file $(arg uav_sdf) -model $(arg uav_namespace) 
         -x $(arg uav_x) -y $(arg uav_y) -z $(arg uav_z) 
         -R $(arg uav_R) -P $(arg uav_P) -Y $(arg uav_Y)"/>                                            
-
 </launch>

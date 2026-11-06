@@ -1,0 +1,300 @@
+<?xml version="1.0"?>
+<!-- Map2 layout; reuse the shared WAM-V, ocean and dynamic docks. Initial poses replace the saved simulation state. -->
+<sdf version="1.7">
+  <world name="robotx_example_course">
+    <scene>
+      <sky>
+        <clouds>
+          <speed>12</speed>
+        </clouds>
+      </sky>
+      <grid>0</grid>
+      <origin_visual>0</origin_visual>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <world_frame_orientation>ENU</world_frame_orientation>
+      <latitude_deg>30.3143</latitude_deg>
+      <longitude_deg>120.338</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <light name="sun" type="directional">
+      <cast_shadows>1</cast_shadows>
+      <pose>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    <gui fullscreen="0">
+      <camera name="user_camera">
+        <pose>-530.104 214.192 145.393 2.6e-05 1.5698 1.56892</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+    <include>
+      <uri>model://sydney_regatta</uri>
+      <name>sydneyregatta</name>
+      <pose>0 0 0.2 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://post</uri>
+      <name>post_0</name>
+      <pose>-535.917 154.363 0.675884 -0.17182 0.030464 -0.005286</pose>
+    </include>
+    <include>
+      <uri>model://post</uri>
+      <name>post_1</name>
+      <pose>-527.49 153.855 0.425844 -0.1365 0 0</pose>
+    </include>
+    <include>
+      <uri>model://post</uri>
+      <name>post_2</name>
+      <pose>-544.833 156.672 0.499025 -0.162625 0 0</pose>
+    </include>
+    <include>
+      <uri>model://antenna</uri>
+      <name>antenna</name>
+      <pose>-531.064 147.669 1.59471 -0.068142 0 -0.1</pose>
+    </include>
+    <include>
+      <uri>model://ground_station</uri>
+      <name>ground_station_0</name>
+      <pose>-540.796 146.494 1.67142 -0.00834 0.01824 1.30173</pose>
+    </include>
+    <include>
+      <uri>model://ground_station</uri>
+      <name>ground_station_1</name>
+      <pose>-537.623 145.828 1.68193 -0.00603 0.018667 1.30157</pose>
+    </include>
+    <include>
+      <uri>model://ground_station</uri>
+      <name>ground_station_2</name>
+      <pose>-534.551 144.91 1.72047 -0.004994 0.020798 1.30149</pose>
+    </include>
+    <include>
+      <uri>model://blue_projectile</uri>
+      <name>blue_projectile</name>
+      <pose>-545 60 0.03 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://map1_ocean</uri>
+      <name>ocean_waves</name>
+      <pose>0 0 0 0 0 0</pose>
+    </include>
+    <plugin name="wind" filename="libusv_gazebo_wind_plugin.so">
+      <wind_obj>
+        <name>wamv</name>
+        <link_name>wamv/base_link</link_name>
+        <coeff_vector>.5 .5 .33</coeff_vector>
+      </wind_obj>
+      <wind_direction>270</wind_direction>
+      <wind_mean_velocity>0</wind_mean_velocity>
+      <var_wind_gain_constants>0</var_wind_gain_constants>
+      <var_wind_time_constants>2</var_wind_time_constants>
+      <random_seed />
+      <update_rate>10</update_rate>
+      <topic_wind_speed>/vrx/debug/wind/speed</topic_wind_speed>
+      <topic_wind_direction>/vrx/debug/wind/direction</topic_wind_direction>
+    </plugin>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic" />
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <wind />
+    <include>
+      <uri>model://dock_2018_dynamic</uri>
+      <name>robotx_dock_2018</name>
+      <pose>-568.305 196.321 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://dock_2018_dynamic</uri>
+      <name>robotx_dock_2018_0</name>
+      <pose>-545.877 196.16 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://dock_2018_dynamic</uri>
+      <name>robotx_dock_2018_1</name>
+      <pose>-545.393 175.404 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://dock_2018_dynamic</uri>
+      <name>robotx_dock_2018_2</name>
+      <pose>-522.785 175.318 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://map1_dock_2022</uri>
+      <name>robotx_dock_2022</name>
+      <pose>-503.04 175.318 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://dock_2018_dynamic</uri>
+      <name>robotx_dock_2018_3</name>
+      <pose>-533.061 217.882 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://dock_2018_dynamic</uri>
+      <name>robotx_dock_2018_4</name>
+      <pose>-510.207 217.952 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://map1_dock_2022</uri>
+      <name>robotx_dock_2022_0</name>
+      <pose>-536.714 226.115 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://dock_2018_dynamic</uri>
+      <name>robotx_dock_2018_6</name>
+      <pose>-556.366 218.585 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://map1_dock_2022</uri>
+      <name>robotx_dock_2022_1</name>
+      <pose>-490.936 217.293 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://map1_dock_2022</uri>
+      <name>robotx_dock_2022_2</name>
+      <pose>-490.956 237.54 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://dock_2018_dynamic</uri>
+      <name>robotx_dock_2018_5</name>
+      <pose>-510.131 241.891 0 0 -0 0</pose>
+    </include>
+    <include>
+      <uri>model://map1_dock_2022</uri>
+      <name>robotx_dock_2022_clone</name>
+      <pose>-490.99 196.534 -0.160401 -0.003809 -0.021412 -0.000363</pose>
+    </include>
+    <include>
+      <uri>model://dock_2018_dynamic</uri>
+      <name>robotx_dock_2018_1_clone</name>
+      <pose>-548.837 175.353 -0.118926 0.001312 -0.006723 -6e-06</pose>
+    </include>
+    <include>
+      <uri>model://map1_dock_2022</uri>
+      <name>robotx_dock_2022_0_clone</name>
+      <pose>-510.876 204.626 -0.110702 -0.000626 -0.030207 -0.001586</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_a</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-470.0 167.0 0.5 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_b</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-470.0 267.0 0.5 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_c</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-570.0 267.0 0.5 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_1-1</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-552.0 184.5 0.3 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_1-2</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-552.0 184.5 0.7 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_1-3</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-552.0 184.5 1.1 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_1-4</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-552.0 184.5 1.5 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_2-1</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-509.0 193.5 0.3 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_2-2</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-509.0 193.5 0.7 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_2-3</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-509.0 193.5 1.1 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_2-4</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-509.0 193.5 1.5 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_3-1</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-511.5 234.5 0.3 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_3-2</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-511.5 234.5 0.7 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_3-3</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-511.5 234.5 1.1 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_3-4</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-511.5 234.5 1.5 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_4-1</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-557.0 213.5 0.3 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_4-2</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-557.0 213.5 0.7 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_4-3</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-557.0 213.5 1.1 0 0 0</pose>
+    </include>
+    <include>
+      <name>custom_dock_block_4-4</name>
+      <uri>model://dock_block_4x4</uri>
+      <pose>-557.0 213.5 1.5 0 0 0</pose>
+    </include>
+    <include>
+      <name>dynamic_obstacle_3</name>
+      <uri>model://robotx_light_buoy</uri>
+      <pose>-498.5 196.0 0.5 0 0 0</pose>
+    </include>
+  </world>
+</sdf>
