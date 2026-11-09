@@ -1,0 +1,66 @@
+{
+  "package": "/home/ubuntu/code/ocean_lab_robotics/catkin_ws/src/scenarios/ocean_simulation_gazebo",
+  "duration_requested": 126.0,
+  "passed": true,
+  "full_demo": false,
+  "early_tag_ids": [
+    [
+      3
+    ]
+  ],
+  "two_laps_tag_ids": [
+    [
+      3
+    ]
+  ],
+  "sample_count": 4722,
+  "maxima": {
+    "position_error": 1.5579475213215672e-08,
+    "angle_error": 5.16191365590357e-08,
+    "linear_error": 3.115888405759361e-05,
+    "angular_error": 4.006591304283568e-05,
+    "radius_error": 2.5221130961483595e-08,
+    "tangent_velocity_error": 5.044337707886498e-05,
+    "cog_velocity_error": 0.00011510242130808375,
+    "heave_error": 1.227401935643968e-08,
+    "attitude_error": 4.2146848510894035e-08
+  },
+  "simulation_duration": 126.217,
+  "pause_stable": true,
+  "reset_phase_position_error": 0.0005005750049084358,
+  "reset_assembly_error": 1.4327223699947874e-08,
+  "reset_restarted": true,
+  "normal_stop_restored": true,
+  "resumed_link_modes": {
+    "wamv::wamv/base_link": true,
+    "wamv::wamv/ball_shooter_base_link": true,
+    "wamv::wamv/ball_shooter_launcher_link": true,
+    "wamv::wamv/gps_wamv_link": true,
+    "wamv::wamv/imu_wamv_link": true,
+    "wamv::wamv/left_front_engine_link": true,
+    "wamv::wamv/left_front_propeller_link": true,
+    "wamv::wamv/left_rear_engine_link": true,
+    "wamv::wamv/left_rear_propeller_link": true,
+    "wamv::wamv/right_front_engine_link": true,
+    "wamv::wamv/right_front_propeller_link": true,
+    "wamv::wamv/right_rear_engine_link": true,
+    "wamv::wamv/right_rear_propeller_link": true
+  },
+  "resumed_active": true,
+  "resumed_model_success": true,
+  "resumed_model_message": "GetModelState: got properties",
+  "resumed_base_position": [
+    -565.4040940646131,
+    181.96917466999975,
+    0.08583138260951312
+  ],
+  "resumed_position": [
+    -565.4040940646131,
+    181.96917466999975,
+    0.08583138260951312
+  ],
+  "supervisor_restarted": true,
+  "heartbeat_loss_restored": true,
+  "stopped_velocities_zero": true,
+  "invalid_start_restored": true
+}

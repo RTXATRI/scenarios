@@ -1,14 +1,28 @@
 <?xml version="1.0"?>
+<!--
+  文件作用：纯无人船仿真入口：启动 Gazebo 世界，并生成一艘实例名为 wamv 的完整 WAM-V。
+  用于查看船模、传感器或接入外部控制；自主导航由 std_usv 的 launch 另行启动。
+-->
 <launch>
+  <!-- Gazebo 世界文件路径；更换地图时也需检查机器人出生点与任务目标的位置。 -->
   <arg name="world" default="$(find ocean_simulation_gazebo)/worlds/usv_path_planning/map1-3.world"/>
+  <!-- 是否打开 Gazebo 客户端窗口；false 时仿真服务和传感器仍可运行。 -->
   <arg name="gui" default="true"/>
+  <!-- 启动时是否暂停物理仿真；true 时需手动恢复，仿真时钟才会继续。 -->
   <arg name="paused" default="false"/>
+  <!-- 是否输出 Gazebo 详细日志，用于排查模型资源和插件加载问题。 -->
   <arg name="verbose" default="false"/>
+  <!-- 无人船出生位置 X，Gazebo 世界坐标，单位 m。 -->
   <arg name="usv_x" default="-570"/>
+  <!-- 无人船出生位置 Y，Gazebo 世界坐标，单位 m。 -->
   <arg name="usv_y" default="167"/>
+  <!-- 无人船模型原点的出生高度 Z，Gazebo 世界坐标，单位 m。 -->
   <arg name="usv_z" default="0.1"/>
+  <!-- 无人船出生横滚角 roll，单位 rad。 -->
   <arg name="usv_roll" default="0"/>
+  <!-- 无人船出生俯仰角 pitch，单位 rad。 -->
   <arg name="usv_pitch" default="0"/>
+  <!-- 无人船出生航向角 yaw，绕世界 Z 轴，单位 rad。 -->
   <arg name="usv_yaw" default="1"/>
 
   <include file="$(find ocean_simulation_gazebo)/launch/core/gazebo_world.launch">

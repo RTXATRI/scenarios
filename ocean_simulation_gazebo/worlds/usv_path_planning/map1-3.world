@@ -48,51 +48,61 @@
       </camera>
     </gui>
     <include>
+      <static>true</static>
       <uri>model://sydney_regatta</uri>
       <name>sydneyregatta</name>
       <pose>0 0 0.2 0 -0 0</pose>
     </include>
     <include>
+      <static>true</static>
       <uri>model://post</uri>
       <name>post_0</name>
       <pose>-535.917 154.363 0.675884 -0.17182 0.030464 -0.005286</pose>
     </include>
     <include>
+      <static>true</static>
       <uri>model://post</uri>
       <name>post_1</name>
       <pose>-527.49 153.855 0.425844 -0.1365 0 0</pose>
     </include>
     <include>
+      <static>true</static>
       <uri>model://post</uri>
       <name>post_2</name>
       <pose>-544.833 156.672 0.499025 -0.162625 0 0</pose>
     </include>
     <include>
+      <static>true</static>
       <uri>model://antenna</uri>
       <name>antenna</name>
       <pose>-531.064 147.669 1.59471 -0.068142 0 -0.1</pose>
     </include>
     <include>
+      <static>true</static>
       <uri>model://ground_station</uri>
       <name>ground_station_0</name>
       <pose>-540.796 146.494 1.67142 -0.00834 0.01824 1.30173</pose>
     </include>
     <include>
+      <static>true</static>
       <uri>model://ground_station</uri>
       <name>ground_station_1</name>
       <pose>-537.623 145.828 1.68193 -0.00603 0.018667 1.30157</pose>
     </include>
     <include>
+      <static>true</static>
       <uri>model://ground_station</uri>
       <name>ground_station_2</name>
       <pose>-534.551 144.91 1.72047 -0.004994 0.020798 1.30149</pose>
     </include>
     <include>
-      <uri>model://blue_projectile</uri>
+      <static>true</static>
+      <uri>model://blue_projectile_static</uri>
       <name>blue_projectile</name>
       <pose>-545 60 0.03 0 -0 0</pose>
     </include>
     <include>
+      <static>true</static>
       <uri>model://map1_ocean</uri>
       <name>ocean_waves</name>
       <pose>0 0 0 0 0 0</pose>
@@ -122,88 +132,105 @@
     </physics>
     <wind />
     <include>
-      <uri>model://dock_2018_dynamic</uri>
+      <static>true</static>
+      <uri>model://dock_2018_static</uri>
       <name>robotx_dock_2018</name>
       <pose>-568.305 196.321 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://dock_2018_dynamic</uri>
+      <static>true</static>
+      <uri>model://dock_2018_static</uri>
       <name>robotx_dock_2018_0</name>
       <pose>-545.877 196.16 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://dock_2018_dynamic</uri>
+      <static>true</static>
+      <uri>model://dock_2018_static</uri>
       <name>robotx_dock_2018_1</name>
       <pose>-545.393 175.404 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://dock_2018_dynamic</uri>
+      <static>true</static>
+      <uri>model://dock_2018_static</uri>
       <name>robotx_dock_2018_2</name>
       <pose>-522.785 175.318 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://map1_dock_2022</uri>
+      <static>true</static>
+      <uri>model://dock_2022_static</uri>
       <name>robotx_dock_2022</name>
       <pose>-503.04 175.318 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://dock_2018_dynamic</uri>
+      <static>true</static>
+      <uri>model://dock_2018_static</uri>
       <name>robotx_dock_2018_3</name>
       <pose>-533.061 217.882 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://dock_2018_dynamic</uri>
+      <static>true</static>
+      <uri>model://dock_2018_static</uri>
       <name>robotx_dock_2018_4</name>
       <pose>-510.207 217.952 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://map1_dock_2022</uri>
+      <static>true</static>
+      <uri>model://dock_2022_static</uri>
       <name>robotx_dock_2022_0</name>
       <pose>-536.714 226.115 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://dock_2018_dynamic</uri>
+      <static>true</static>
+      <uri>model://dock_2018_static</uri>
       <name>robotx_dock_2018_6</name>
       <pose>-556.366 218.585 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://map1_dock_2022</uri>
+      <static>true</static>
+      <uri>model://dock_2022_static</uri>
       <name>robotx_dock_2022_1</name>
       <pose>-490.936 217.293 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://map1_dock_2022</uri>
+      <static>true</static>
+      <uri>model://dock_2022_static</uri>
       <name>robotx_dock_2022_2</name>
       <pose>-490.956 237.54 0 0 -0 0</pose>
     </include>
     <include>
-      <uri>model://dock_2018_dynamic</uri>
+      <static>true</static>
+      <uri>model://dock_2018_static</uri>
       <name>robotx_dock_2018_5</name>
       <pose>-510.131 241.891 0 0 -0 0</pose>
     </include>
     <include>
+      <static>true</static>
       <name>custom_dock_block_1</name>
       <uri>model://dock_block_4x4</uri>
       <pose>-556.5 185.0 0.5 0 0 0</pose>
     </include>
     <include>
+      <static>true</static>
       <name>custom_dock_block_4</name>
       <uri>model://dock_block_4x4</uri>
       <pose>-562.0 218.8 0.5 0 0 0</pose>
     </include>
     <include>
+      <static>true</static>
       <name>custom_dock_block_6</name>
       <uri>model://dock_block_4x4</uri>
       <pose>-516.0 234.5 1.5 0 0 0</pose>
     </include>
     <include>
+      <static>true</static>
       <name>dynamic_obstacle_1</name>
-      <uri>model://robotx_light_buoy</uri>
+      <uri>model://robotx_light_buoy_static</uri>
       <pose>-529.0 215.5 0.5 0 0 0</pose>
     </include>
     <include>
+      <static>true</static>
       <name>dynamic_obstacle_2</name>
-      <uri>model://robotx_light_buoy</uri>
+      <uri>model://robotx_light_buoy_static</uri>
       <pose>-547.5 234.5 0.5 0 0 0</pose>
     </include>
   </world>

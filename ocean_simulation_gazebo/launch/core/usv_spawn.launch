@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <!--
+  文件作用：历史 URDF 无人船入口：生成船模，并启动关节 TF、EKF、GPS 坐标转换和双推进器命令转换。
+  当前只有 H 分支声明 urdf，使用 T/X 配置前需核对该参数；现有 SDF Demo 使用 wamv_spawn.launch。
+-->
+<!--
     This file is part of USV project.
 
     Author: WYB
@@ -9,15 +13,25 @@
     Copyright (C) 2026 Ocean Information and Intelligent Equipment Laboratory
 -->
 <launch>
+    <!-- 历史 URDF 船模的实例名及话题/TF 前缀；应与控制和定位链使用的名称一致。 -->
     <arg name="usv_namespace" default=""/>
+    <!-- 是否通过 URDF 的辅助关节约束船与世界的连接；用于受约束的船体试验。 -->
     <arg name="usv_locked" default="false"/>
+    <!-- URDF 推进器布局选项 H/T/X，需与所选模型的推进器数量及控制接口匹配。 -->
     <arg name="thrust_config" default="T"/>
+    <!-- 是否在生成的 URDF 中启用 VRX 传感器配置。 -->
     <arg name="vrx_sensors_enabled" default="false"/>
+    <!-- 无人船出生位置 X，Gazebo 世界坐标，单位 m。 -->
     <arg name="usv_x" default="0"/>
+    <!-- 无人船出生位置 Y，Gazebo 世界坐标，单位 m。 -->
     <arg name="usv_y" default="0"/>
+    <!-- 无人船模型原点的出生高度 Z，Gazebo 世界坐标，单位 m。 -->
     <arg name="usv_z" default="0.15"/>
+    <!-- 无人船出生横滚角 roll，单位 rad。 -->
     <arg name="usv_roll" default="0"/>
+    <!-- 无人船出生俯仰角 pitch，单位 rad。 -->
     <arg name="usv_pitch" default="0"/>
+    <!-- 无人船出生航向角 yaw，绕世界 Z 轴，单位 rad。 -->
     <arg name="usv_yaw" default="0"/>
     <!-- 无人船模型组 -->
   
@@ -26,6 +40,7 @@
     <arg name="t_config" value="$(eval int((thrust_config)=='T'))"/>
     <arg name="x_config" value="$(eval int((thrust_config)=='X'))"/>
     
+    <!-- WAM-V Xacro 文件路径；当前仅在 H 布局分支声明此参数。 -->
     <arg if="$(arg h_config)" name="urdf" default="$(find wamv_gazebo)/urdf/wamv_gazebo.urdf.xacro"/>
 
     <!-- 加载无人船URDF模型 -->
@@ -52,6 +67,7 @@
     <!-- 发布关节状态（用于GPS和IMU的TF变换） -->
     <node pkg="joint_state_publisher" type="joint_state_publisher" 
         name="joint_state_publisher">
+        <!-- 历史关节状态发布器的界面开关。 -->
         <param name="gui" value="false" />
     </node>
 
@@ -59,31 +75,44 @@
     <node pkg="robot_localization" type="ekf_localization_node"
         name="ekf_localization" clear_params="false">
         <param name="tf_prefix" value="$(arg usv_namespace)" />
+        <!-- EKF 判定传感器数据超时的时间阈值，单位 s。 -->
         <param name="sensor_timeout" value="2.0"/>
+        <!-- 是否按平面运动约束融合状态，适用于无人船二维导航。 -->
         <param name="two_d_mode" value="true"/>
+        <!-- 定位使用的全局地图坐标系名称。 -->
         <param name="map_frame" value="map"/>
         <param name="odom_frame" value="$(arg usv_namespace)/odom"/>
         <param name="base_link_frame" value="$(arg usv_namespace)/base_link"/>
         <param name="world_frame" value="$(arg usv_namespace)/odom"/>
+        <!-- 是否发布该定位节点负责的 TF 变换。 -->
         <param name="publish_tf" value="true"/>
+        <!-- 定位或 GPS 转换节点更新频率，单位 Hz。 -->
         <param name="frequency" value="60"/>
         
+        <!-- EKF 的首个 IMU 输入话题，按当前节点命名空间解析。 -->
         <param name="imu0" value="sensors/imu/imu/data"/>
+        <!-- IMU 融合字段开关，依次对应位置、姿态、线速度、角速度和线加速度，共 15 项。 -->
         <rosparam param="imu0_config">[false, false, false,
             false, false, true,
             false, false, false,
             false, false, true,
             true, false, false]</rosparam>
+        <!-- 是否将 IMU 姿态测量按相邻差分方式融合。 -->
         <param name="imu0_differential" value="false"/>
+        <!-- 是否从 IMU 加速度测量中去除重力分量，需与 IMU 输出约定匹配。 -->
         <param name="imu0_remove_gravitational_acceleration" value="true"/>
 
+        <!-- EKF 的首个里程计输入话题，此处接入 GPS 转换得到的位置观测。 -->
         <param name="odom0" value="robot_localization/odometry/gps"/>
+        <!-- 里程计融合字段开关，顺序与 IMU 的 15 项配置一致；true 表示使用该测量字段。 -->
         <rosparam param="odom0_config">[true, true, true,
             false, false, false,
             false, false, false,
             false, false, false,
             false, false, false]</rosparam>
+        <!-- 是否将里程计位姿测量按相邻差分方式融合。 -->
         <param name="odom0_differential" value="false"/>
+        <!-- 是否平滑处理带时间延迟的融合观测。 -->
         <param name="smooth_lagged_data" value="true"/>
     </node>
 
@@ -91,13 +120,21 @@
     <node pkg="robot_localization" type="navsat_transform_node"
         name="navsat_transform" respawn="true" output="screen">      
         <param name="tf_prefix" value="$(arg usv_namespace)" />
+        <!-- 定位或 GPS 转换节点更新频率，单位 Hz。 -->
         <param name="frequency" value="60"/>
+        <!-- 当地磁偏角，单位 rad，用于磁航向与地理方向对齐。 -->
         <param name="magnetic_declination_radians" value="0"/>
+        <!-- 是否发布 GPS 笛卡尔参考系与定位世界坐标系之间的变换。 -->
         <param name="broadcast_cartesian_transform" value="true"/>
+        <!-- 是否等待显式地理基准；false 时 datum 参数不作为手动基准启用。 -->
         <param name="wait_for_datum" value="false"/>
+        <!-- GPS 转换时是否使用里程计中的航向，需保证其方向约定正确。 -->
         <param name="use_odometry_yaw" value="true"/>
+        <!-- 保留的地理基准配置；启用手动基准前需同时检查 wait_for_datum 和所需字段格式。 -->
         <rosparam param="datum">[-33.73, 150.67]</rosparam>
+        <!-- GPS 航向参考偏移，单位 rad。 -->
         <param name="yaw_offset" value="0"/>
+        <!-- 是否将融合位置转换回经纬度并发布过滤后的 GPS。 -->
         <param name="publish_filtered_gps" value="true"/>
         <remap from="gps/fix" to="sensors/gps/gps/fix" />
     </node>

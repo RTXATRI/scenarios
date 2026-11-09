@@ -11,7 +11,9 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  std_srvs
 )
+find_package(gazebo REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -103,6 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+  CATKIN_DEPENDS roscpp rospy std_msgs std_srvs
 #  INCLUDE_DIRS include
 #  LIBRARIES ocean_simulation_gazebo
 #  CATKIN_DEPENDS roscpp rospy std_msgs
@@ -118,6 +121,14 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+)
+
+add_library(wamv_circle_motion_plugin SHARED src/wamv_circle_motion_plugin.cpp)
+target_compile_features(wamv_circle_motion_plugin PRIVATE cxx_std_17)
+target_include_directories(wamv_circle_motion_plugin SYSTEM PRIVATE ${GAZEBO_INCLUDE_DIRS})
+target_link_libraries(wamv_circle_motion_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES})
+install(TARGETS wamv_circle_motion_plugin
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
 
 ## Declare a C++ library
@@ -159,10 +170,17 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# catkin_install_python(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+catkin_install_python(PROGRAMS
+  scripts/navigation_dynamic_buoys.py scripts/set_simulation_speed.py
+  scripts/generate_navigation_maps.py
+  scripts/wamv_circle_motion.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+# Consumers load the geometry API from this read-only source resource, avoiding
+# catkin's executable relay scripts. The implementation has one source file.
+install(FILES scripts/generate_navigation_maps.py
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/scripts
+)
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
@@ -205,6 +223,10 @@ install(FILES docs/images/map1_wamv.png docs/images/map2_wamv.png
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/docs/images
 )
 
+install(DIRECTORY docs/circle_motion_validation
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/docs
+)
+
 #############
 ## Testing ##
 #############
@@ -216,4 +238,12 @@ install(FILES docs/images/map1_wamv.png docs/images/map2_wamv.png
 # endif()
 
 ## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_nosetests(test)
+  catkin_add_gtest(test_wamv_circle_motion_math test/test_wamv_circle_motion_math.cpp)
+  if(TARGET test_wamv_circle_motion_math)
+    target_compile_features(test_wamv_circle_motion_math PRIVATE cxx_std_17)
+    target_include_directories(test_wamv_circle_motion_math SYSTEM PRIVATE ${GAZEBO_INCLUDE_DIRS})
+    target_link_libraries(test_wamv_circle_motion_math ${GAZEBO_LIBRARIES})
+  endif()
+endif()

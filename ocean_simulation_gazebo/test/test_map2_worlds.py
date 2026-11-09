@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Map2 regression checks; run with unittest discovery after sourcing ROS."""
 
+import importlib.util
 import subprocess
 import unittest
 import xml.etree.ElementTree as ET
@@ -8,17 +9,23 @@ from pathlib import Path
 
 import rospkg
 
-from test_map1_worlds import COMMON_NAMES, PACKAGE, WORLDS, semantic
+# Load shared fixtures by file so catkin/nose's -P mode needs no sys.path edits.
+SPEC = importlib.util.spec_from_file_location(
+    "_map1_test_fixtures", Path(__file__).with_name("test_map1_worlds.py"))
+fixtures = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(fixtures)
+COMMON_NAMES, PACKAGE, WORLDS, semantic = (
+    fixtures.COMMON_NAMES, fixtures.PACKAGE, fixtures.WORLDS, fixtures.semantic)
 
 
 MAPS = ("map2-2.world", "map2-1.world")  # Environment-only and additional-obstacle variants.
 CLONES = {
     "robotx_dock_2022_clone": (
-        "map1_dock_2022", (-490.99, 196.534, -0.160401, -0.003809, -0.021412, -0.000363)),
+        "dock_2022_static", (-490.99, 196.534, -0.160401, -0.003809, -0.021412, -0.000363)),
     "robotx_dock_2018_1_clone": (
-        "dock_2018_dynamic", (-548.837, 175.353, -0.118926, 0.001312, -0.006723, -0.000006)),
+        "dock_2018_static", (-548.837, 175.353, -0.118926, 0.001312, -0.006723, -0.000006)),
     "robotx_dock_2022_0_clone": (
-        "map1_dock_2022", (-510.876, 204.626, -0.110702, -0.000626, -0.030207, -0.001586)),
+        "dock_2022_static", (-510.876, 204.626, -0.110702, -0.000626, -0.030207, -0.001586)),
 }
 OBSTACLES = {
     "custom_dock_block_a": (-470, 167, 0.5, 0, 0, 0),
@@ -66,7 +73,7 @@ class Map2Tests(unittest.TestCase):
             with self.subTest(obstacle=name):
                 element = models[name]
                 self.assertEqual(tuple(map(float, element.findtext("pose").split())), pose)
-                resource = "robotx_light_buoy" if name == "dynamic_obstacle_3" else "dock_block_4x4"
+                resource = "robotx_light_buoy_static" if name == "dynamic_obstacle_3" else "dock_block_4x4"
                 self.assertEqual(element.findtext("uri"), "model://" + resource)
 
     def test_environment_and_original_overview(self):
@@ -100,9 +107,10 @@ class Map2Tests(unittest.TestCase):
             model = ET.parse(sdf).getroot().find("model")
             if uri.endswith("dock_block_4x4"):
                 self.assertIn(model.findtext("static"), ("true", "1"))
-            elif uri.endswith("robotx_light_buoy"):
-                self.assertNotIn(model.findtext("static"), ("true", "1"))
-                self.assertTrue(model.findall("plugin"))
+            elif uri.endswith("robotx_light_buoy_static"):
+                self.assertIn(model.findtext("static"), ("true", "1"))
+                self.assertFalse(model.findall("plugin"))
+                self.assertIsNotNone(model.find(".//plugin[@filename='liblight_buoy_plugin.so']"))
 
     def test_xacro_generates_environment_only(self):
         template = WORLDS / "map2_base.world.xacro"

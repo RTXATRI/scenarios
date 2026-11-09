@@ -1,11 +1,19 @@
 <?xml version="1.0"?>
+<!--
+  文件作用：环境预览入口：加载指定 Gazebo 世界和模型资源路径，供检查地图、海面及静态环境。
+  机器人实例需要通过 demo_usv.launch、demo_uav_usv.launch 或其他放置模块生成。
+-->
 <launch>
     <!-- ========== 最小化Gazebo配置 ========== -->
     <!-- 要加载的Gazebo世界文件 -->
+    <!-- Gazebo 世界文件路径；更换地图时也需检查机器人出生点与任务目标的位置。 -->
     <arg name="world" default="$(find ocean_simulation_gazebo)/worlds/usv_path_planning/map1-3.world" />
     <!-- 保留原有参数接口；world 也可显式指定地图1或地图2文件。 -->
+    <!-- 是否打开 Gazebo 客户端窗口；false 时仿真服务和传感器仍可运行。 -->
     <arg name="gui" default="true" />
+    <!-- 是否输出 Gazebo 详细日志，用于排查模型资源和插件加载问题。 -->
     <arg name="verbose" default="false"/>
+    <!-- 启动时是否暂停物理仿真；true 时需手动恢复，仿真时钟才会继续。 -->
     <arg name="paused" default="false"/>
 
     <!-- Reuse the original VRX/WAM-V meshes without machine-specific paths. -->

@@ -1,0 +1,64 @@
+{
+  "package": "/tmp/wamv-circle-fix-sirjxoeq/install/share/ocean_simulation_gazebo",
+  "duration_requested": 15.0,
+  "passed": true,
+  "full_demo": true,
+  "mavros_connected": true,
+  "early_tag_ids": [
+    [
+      3
+    ]
+  ],
+  "end_tag_ids": [
+    [
+      3
+    ]
+  ],
+  "sample_count": 559,
+  "maxima": {
+    "position_error": 1.557921352019757e-08,
+    "angle_error": 5.16191365590357e-08,
+    "linear_error": 3.115839021084239e-05,
+    "angular_error": 4.006580237944254e-05,
+    "radius_error": 2.5221017274645874e-08,
+    "tangent_velocity_error": 5.04433771470684e-05,
+    "cog_velocity_error": 0.00010854289447937309,
+    "heave_error": 1.2260924470153256e-08,
+    "attitude_error": 4.2146848510894035e-08
+  },
+  "simulation_duration": 15.148,
+  "pause_stable": true,
+  "normal_stop_restored": true,
+  "resumed_link_modes": {
+    "wamv::wamv/base_link": true,
+    "wamv::wamv/ball_shooter_base_link": true,
+    "wamv::wamv/ball_shooter_launcher_link": true,
+    "wamv::wamv/gps_wamv_link": true,
+    "wamv::wamv/imu_wamv_link": true,
+    "wamv::wamv/left_front_engine_link": true,
+    "wamv::wamv/left_front_propeller_link": true,
+    "wamv::wamv/left_rear_engine_link": true,
+    "wamv::wamv/left_rear_propeller_link": true,
+    "wamv::wamv/right_front_engine_link": true,
+    "wamv::wamv/right_front_propeller_link": true,
+    "wamv::wamv/right_rear_engine_link": true,
+    "wamv::wamv/right_rear_propeller_link": true
+  },
+  "resumed_active": true,
+  "resumed_model_success": true,
+  "resumed_model_message": "GetModelState: got properties",
+  "resumed_base_position": [
+    -565.4027167684551,
+    181.96595705366317,
+    0.08599780969101134
+  ],
+  "resumed_position": [
+    -565.4027167684551,
+    181.96595705366317,
+    0.08599780969101134
+  ],
+  "supervisor_restarted": true,
+  "heartbeat_loss_restored": true,
+  "stopped_velocities_zero": true,
+  "invalid_start_restored": true
+}

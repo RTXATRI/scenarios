@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <!--
+  文件作用：PX4 软件在环核心模块：启动 px4_sitl_default，按 vehicle 设置 PX4_SIM_MODEL。
+  Gazebo、无人机 SDF 和 MAVROS 由调用方启动；est 是当前未转发给 PX4 的保留参数。
+-->
+<!--
     This file is part of USV project.
 
     Author: WYB
@@ -10,11 +14,14 @@
 -->
 <launch>
     <!-- vehicle configs -->
+    <!-- 保留的估计器名称参数；当前 PX4 启动命令未读取它，修改不会切换估计器。 -->
     <arg name="est" default="ekf2"/>
+    <!-- PX4 仿真机型名，通常为 iris；须与加载的无人机模型及飞控配置匹配。 -->
     <arg name="vehicle" default="iris"/>
     <!-- evn configs -->
     <env name="PX4_SIM_MODEL" value="gazebo-classic_$(arg vehicle)" />
     <!-- PX4 configs -->
+    <!-- 是否保留 PX4 交互控制台；false 使用后台模式，适合由 launch 统一管理。 -->
     <arg name="interactive" default="true"/>
     <!-- PX4 SITL -->
     <arg unless="$(arg interactive)" name="px4_command_arg1" value="-d"/>

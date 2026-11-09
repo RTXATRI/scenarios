@@ -1,0 +1,33 @@
+{
+  "package": "/tmp/wamv-circle-fix-sirjxoeq/install/share/ocean_simulation_gazebo",
+  "duration_requested": 5.0,
+  "passed": false,
+  "full_demo": true,
+  "mavros_connected": true,
+  "early_tag_ids": [
+    [
+      3
+    ]
+  ],
+  "end_tag_ids": [
+    [
+      3
+    ]
+  ],
+  "sample_count": 197,
+  "maxima": {
+    "position_error": 1.557945345943965e-08,
+    "angle_error": 4.2146848510894035e-08,
+    "linear_error": 3.115890812215903e-05,
+    "angular_error": 4.006594718860748e-05,
+    "radius_error": 2.5190955987852703e-08,
+    "tangent_velocity_error": 5.0389459785150316e-05,
+    "cog_velocity_error": 0.00010854200476341311,
+    "heave_error": 1.209956393410927e-08,
+    "attitude_error": 4.2146848510894035e-08
+  },
+  "simulation_duration": 5.184,
+  "pause_stable": true,
+  "error": "TimeoutError('condition did not become true within 25.0 seconds')",
+  "traceback": "Traceback (most recent call last):\n  File \"/tmp/wamv-circle-fix-sirjxoeq/full_reset_probe.py\", line 370, in main\n    wait_until(lambda: get_world().sim_time >= 4., 25.)\n  File \"/tmp/wamv-circle-fix-sirjxoeq/full_reset_probe.py\", line 95, in wait_until\n    raise TimeoutError('condition did not become true within %.1f seconds' % timeout)\nTimeoutError: condition did not become true within 25.0 seconds\n"
+}

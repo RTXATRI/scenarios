@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<!--
+  文件作用：船机协同绕圈仿真入口：WAM-V 按圆周及摇晃参数运动，岸边同时生成无人机并启动 PX4、MAVROS。
+  本入口加载原生运动插件，MAVROS 位于 /mavros；飞行任务由 lite_quad_uav 另行启动。
+-->
+<launch>
+  <!-- Gazebo 世界文件路径；更换地图时也需检查机器人出生点与任务目标的位置。 -->
+  <arg name="world" default="$(find ocean_simulation_gazebo)/worlds/uav_usv_coop/map1_circle.world"/>
+  <!-- 是否打开 Gazebo 客户端窗口；false 时仿真服务和传感器仍可运行。 -->
+  <arg name="gui" default="true"/>
+  <!-- 启动时是否暂停物理仿真；true 时需手动恢复，仿真时钟才会继续。 -->
+  <arg name="paused" default="false"/>
+  <!-- 是否输出 Gazebo 详细日志，用于排查模型资源和插件加载问题。 -->
+  <arg name="verbose" default="false"/>
+  <!-- 是否保留 PX4 交互控制台；false 使用后台模式，适合由 launch 统一管理。 -->
+  <arg name="interactive" default="false"/>
+  <!-- MAVROS 与飞控的通信地址；端口必须与实际 PX4 实例配置匹配。 -->
+  <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
+  <!-- MAVROS 转发给地面站的地址；空字符串表示不配置该转发地址。 -->
+  <arg name="gcs_url" default=""/>
+  <!-- 无人船模型资源名：wamv 为原船，wamv_apriltag 为带船顶标签的模型。 -->
+  <arg name="usv_model" default="wamv_apriltag"/>
+
+  <!-- 无人船绕圈轨迹：修改下面的 default，或在 roslaunch 命令后用 参数名:=值 覆盖。
+       参数在启动时读取；修改后需重新启动本场景。
+       例如将圆心移到 (-560, 185)，航速改为 0.8 m/s：
+       roslaunch ocean_simulation_gazebo demo_uav_usv_circle.launch circle_center_x:=-560 circle_center_y:=185 circle_speed:=0.8
+  -->
+  <!-- 圆心 X、Y：Gazebo 世界坐标，单位 m；与 MAVROS 本地坐标的原点不同。 -->
+  <arg name="circle_center_x" default="-570"/>
+  <arg name="circle_center_y" default="180"/>
+  <!-- 绕圈半径，单位 m，必须大于 0；调整圆心或半径时应保证整个船体避开岸线。 -->
+  <arg name="circle_radius" default="5"/>
+  <!-- 水平切线航速，单位 m/s，必须非负；设为 0 时水平位置不变，摇晃仍可继续。
+       角速度大小 = 航速 / 半径；非零航速时，一圈用时 = 2*pi*半径 / 航速。
+       默认 5 m、0.5 m/s 对应 0.1 rad/s，一圈约 62.83 秒仿真时间。
+  -->
+  <arg name="circle_speed" default="2.0"/>
+  <!-- 从世界坐标 +Z 上方向下看：true 为顺时针，false 为逆时针；航速始终填非负值。 -->
+  <arg name="clockwise" default="false"/>
+  <!-- 船模型原点的基准世界高度，单位 m；实际高度在此基础上叠加升沉。 -->
+  <arg name="usv_z" default="0.1"/>
+
+  <!-- 摇晃幅度必须非负：横摇、纵摇单位 rad，默认约 2 度、1 度；升沉单位 m。
+       对应幅度设为 0 即关闭该项摇晃；三项均为 0 时只做水平绕圈。
+  -->
+  <arg name="roll_amplitude" default="0.03490658503988659"/>
+  <arg name="pitch_amplitude" default="0.017453292519943295"/>
+  <arg name="heave_amplitude" default="0.03"/>
+  <!-- 横摇、纵摇、升沉周期，单位为仿真秒，必须大于 0；周期越大，摇晃越慢。 -->
+  <arg name="roll_period" default="6"/>
+  <arg name="pitch_period" default="8"/>
+  <arg name="heave_period" default="7"/>
+  <!-- 监督节点的墙钟心跳频率，单位 Hz，必须大于 0；不用于调整船速或绕圈周期。
+       实际轨迹由 C++ 插件按 Gazebo 每个物理步更新，暂停时心跳仍继续。
+  -->
+  <arg name="motion_rate" default="50"/>
+
+  <!-- 以下为岸边无人机的初始世界位姿，与无人船圆心参数分别设置。 -->
+  <!-- 无人机出生位置 X，Gazebo 世界坐标，单位 m；与 MAVROS 本地原点区分。 -->
+  <arg name="uav_x" default="-584.75"/>
+  <!-- 无人机出生位置 Y，Gazebo 世界坐标，单位 m。 -->
+  <arg name="uav_y" default="177"/>
+  <!-- 无人机出生高度 Z，Gazebo 世界坐标，单位 m；不表示自动起飞高度。 -->
+  <arg name="uav_z" default="0.75"/>
+  <!-- 无人机出生横滚角 roll，单位 rad。 -->
+  <arg name="uav_roll" default="0"/>
+  <!-- 无人机出生俯仰角 pitch，单位 rad。 -->
+  <arg name="uav_pitch" default="0"/>
+  <!-- 无人机出生航向角 yaw，单位 rad。 -->
+  <arg name="uav_yaw" default="0"/>
+
+  <include file="$(find ocean_simulation_gazebo)/launch/core/gazebo_world.launch">
+    <arg name="world" value="$(arg world)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="verbose" value="$(arg verbose)"/>
+    <arg name="with_px4" value="true"/>
+    <arg name="extra_gazebo_args" value="-s libwamv_circle_motion_plugin.so"/>
+  </include>
+  <!-- 无人船自动从圆心的 +X 方向出发：(center_x + radius, center_y, usv_z)，
+       初始朝向沿运动切线；调整上方圆心、半径或方向后，这里会自动同步。
+  -->
+  <include file="$(find ocean_simulation_gazebo)/launch/core/wamv_spawn.launch">
+    <arg name="usv_model" value="$(arg usv_model)"/>
+    <arg name="usv_x" value="$(eval float(arg('circle_center_x')) + float(arg('circle_radius')))"/>
+    <arg name="usv_y" value="$(arg circle_center_y)"/>
+    <arg name="usv_z" value="$(arg usv_z)"/>
+    <arg name="usv_roll" value="0"/>
+    <arg name="usv_pitch" value="0"/>
+    <arg name="usv_yaw" value="$(eval -pi/2 if arg('clockwise') else pi/2)"/>
+  </include>
+  <include file="$(find ocean_simulation_gazebo)/launch/core/uav_spawn.launch">
+    <arg name="uav_x" value="$(arg uav_x)"/>
+    <arg name="uav_y" value="$(arg uav_y)"/>
+    <arg name="uav_z" value="$(arg uav_z)"/>
+    <arg name="uav_roll" value="$(arg uav_roll)"/>
+    <arg name="uav_pitch" value="$(arg uav_pitch)"/>
+    <arg name="uav_yaw" value="$(arg uav_yaw)"/>
+  </include>
+  <include file="$(find ocean_simulation_gazebo)/launch/core/px4_sitl_core.launch">
+    <arg name="vehicle" value="iris"/>
+    <arg name="interactive" value="$(arg interactive)"/>
+  </include>
+  <!-- Match lite_quad_uav's /mavros default; start its control launch separately. -->
+  <include file="$(find mavros)/launch/px4.launch">
+    <arg name="fcu_url" value="$(arg fcu_url)"/>
+    <arg name="gcs_url" value="$(arg gcs_url)"/>
+  </include>
+  <!-- 下方仅转发上面定义的轨迹参数；日常调参优先修改顶部 default 或命令行覆盖值。 -->
+  <node pkg="ocean_simulation_gazebo" type="wamv_circle_motion.py" name="circle_motion"
+        ns="wamv/simulation" output="screen" required="false" respawn="false">
+    <param name="world_file" value="$(arg world)"/>
+    <param name="circle_center_x" value="$(arg circle_center_x)" type="double"/>
+    <param name="circle_center_y" value="$(arg circle_center_y)" type="double"/>
+    <param name="circle_radius" value="$(arg circle_radius)" type="double"/>
+    <param name="circle_speed" value="$(arg circle_speed)" type="double"/>
+    <param name="clockwise" value="$(arg clockwise)" type="bool"/>
+    <param name="usv_z" value="$(arg usv_z)" type="double"/>
+    <param name="roll_amplitude" value="$(arg roll_amplitude)" type="double"/>
+    <param name="pitch_amplitude" value="$(arg pitch_amplitude)" type="double"/>
+    <param name="heave_amplitude" value="$(arg heave_amplitude)" type="double"/>
+    <param name="roll_period" value="$(arg roll_period)" type="double"/>
+    <param name="pitch_period" value="$(arg pitch_period)" type="double"/>
+    <param name="heave_period" value="$(arg heave_period)" type="double"/>
+    <param name="motion_rate" value="$(arg motion_rate)" type="double"/>
+  </node>
+</launch>

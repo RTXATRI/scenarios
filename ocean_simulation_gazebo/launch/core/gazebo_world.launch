@@ -1,17 +1,31 @@
 <?xml version="1.0"?>
+<!--
+  文件作用：公共 Gazebo 启动模块：配置场景模型、材质及插件搜索路径，并加载传入的 world。
+  供各 Demo include；with_px4 控制 PX4 资源接入，extra_gazebo_args 允许入口加载额外系统插件。
+-->
 <launch>
+  <!-- Gazebo 世界文件路径；更换地图时也需检查机器人出生点与任务目标的位置。 -->
   <arg name="world"/>
+  <!-- 是否打开 Gazebo 客户端窗口；false 时仿真服务和传感器仍可运行。 -->
   <arg name="gui" default="true"/>
+  <!-- 启动时是否暂停物理仿真；true 时需手动恢复，仿真时钟才会继续。 -->
   <arg name="paused" default="false"/>
+  <!-- 是否输出 Gazebo 详细日志，用于排查模型资源和插件加载问题。 -->
   <arg name="verbose" default="false"/>
+  <!-- 是否接入 PX4 模型及插件路径；纯无人船场景保持 false。 -->
   <arg name="with_px4" default="false"/>
+  <!-- 传给 gzserver 的附加启动选项；空值使用常规配置，绕圈入口用于加载运动插件。 -->
+  <arg name="extra_gazebo_args" default=""/>
 
+  <!-- 场景及依赖包的模型根目录，按包位置自动组装；新增模型资源时检查此搜索路径。 -->
   <arg name="model_roots"
        value="$(find ocean_simulation_gazebo)/models/vehicle:$(find ocean_simulation_gazebo)/models/other:$(find wamv_description)/models:$(find wamv_gazebo)/models:$(find vrx_gazebo)/models:$(find wave_gazebo)/world_models:$(find wave_gazebo)/models"/>
   <!-- Only the cooperative demo resolves PX4. Its GPS model must precede WAM-V's mesh-only gps directory. -->
+  <!-- 启用 PX4 时优先加载其模型目录，确保无人机 GPS 模型与船模网格能分别解析。 -->
   <arg if="$(arg with_px4)" name="px4_models"
        value="$(find px4)/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models:"/>
   <arg unless="$(arg with_px4)" name="px4_models" value=""/>
+  <!-- 启用 PX4 时追加其 Gazebo Classic 插件目录，需要预先完成对应 SITL 构建。 -->
   <arg if="$(arg with_px4)" name="px4_plugins"
        value="$(find px4)/build/px4_sitl_default/build_gazebo-classic:"/>
   <arg unless="$(arg with_px4)" name="px4_plugins" value=""/>
@@ -32,5 +46,6 @@
     <arg name="use_sim_time" value="true"/>
     <arg name="physics" value="ode"/>
     <arg name="server_required" value="true"/>
+    <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
   </include>
 </launch>

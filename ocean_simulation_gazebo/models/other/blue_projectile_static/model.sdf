@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<sdf version="1.7">
+  <!--Fixed environment blue_projectile: original geometry and visual materials, without buoyancy or force-driven motion.-->
+  <model name="blue_projectile">
+    <static>true</static>
+    <link name="link">
+      <collision name="collision">
+        <geometry>
+          <sphere>
+            <radius>0.0285</radius>
+          </sphere>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <sphere>
+            <radius>0.0285</radius>
+          </sphere>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://blue_projectile/materials/scripts/blue_projectile.material</uri>
+            <name>blue_projectile/Blue</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

@@ -1,23 +1,48 @@
 <?xml version="1.0"?>
+<!--
+  文件作用：船机协同基础仿真入口：启动海洋世界、带顶部 AprilTag 的 WAM-V、无人机、PX4 SITL 和 MAVROS。
+  MAVROS 位于 /uav_1/mavros；飞行控制与任务由 lite_quad_uav 另行启动。
+-->
 <launch>
+  <!-- Gazebo 世界文件路径；更换地图时也需检查机器人出生点与任务目标的位置。 -->
   <arg name="world" default="$(find ocean_simulation_gazebo)/worlds/uav_usv_coop/map1.world"/>
+  <!-- 是否打开 Gazebo 客户端窗口；false 时仿真服务和传感器仍可运行。 -->
   <arg name="gui" default="true"/>
+  <!-- 启动时是否暂停物理仿真；true 时需手动恢复，仿真时钟才会继续。 -->
   <arg name="paused" default="false"/>
+  <!-- 是否输出 Gazebo 详细日志，用于排查模型资源和插件加载问题。 -->
   <arg name="verbose" default="false"/>
+  <!-- 无人船模型资源名：wamv 为原船，wamv_apriltag 为带船顶标签的模型。 -->
+  <arg name="usv_model" default="wamv_apriltag"/>
+  <!-- 无人船出生位置 X，Gazebo 世界坐标，单位 m。 -->
   <arg name="usv_x" default="-570"/>
+  <!-- 无人船出生位置 Y，Gazebo 世界坐标，单位 m。 -->
   <arg name="usv_y" default="167"/>
+  <!-- 无人船模型原点的出生高度 Z，Gazebo 世界坐标，单位 m。 -->
   <arg name="usv_z" default="0.1"/>
+  <!-- 无人船出生横滚角 roll，单位 rad。 -->
   <arg name="usv_roll" default="0"/>
+  <!-- 无人船出生俯仰角 pitch，单位 rad。 -->
   <arg name="usv_pitch" default="0"/>
+  <!-- 无人船出生航向角 yaw，绕世界 Z 轴，单位 rad。 -->
   <arg name="usv_yaw" default="1"/>
+  <!-- 无人机出生位置 X，Gazebo 世界坐标，单位 m；与 MAVROS 本地原点区分。 -->
   <arg name="uav_x" default="-584.75"/>
+  <!-- 无人机出生位置 Y，Gazebo 世界坐标，单位 m。 -->
   <arg name="uav_y" default="177"/>
+  <!-- 无人机出生高度 Z，Gazebo 世界坐标，单位 m；不表示自动起飞高度。 -->
   <arg name="uav_z" default="1.75"/>
+  <!-- 无人机出生横滚角 roll，单位 rad。 -->
   <arg name="uav_roll" default="0"/>
+  <!-- 无人机出生俯仰角 pitch，单位 rad。 -->
   <arg name="uav_pitch" default="0"/>
+  <!-- 无人机出生航向角 yaw，单位 rad。 -->
   <arg name="uav_yaw" default="0"/>
+  <!-- 是否保留 PX4 交互控制台；false 使用后台模式，适合由 launch 统一管理。 -->
   <arg name="interactive" default="false"/>
+  <!-- MAVROS 与飞控的通信地址；端口必须与实际 PX4 实例配置匹配。 -->
   <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
+  <!-- MAVROS 转发给地面站的地址；空字符串表示不配置该转发地址。 -->
   <arg name="gcs_url" default=""/>
 
   <include file="$(find ocean_simulation_gazebo)/launch/core/gazebo_world.launch">
@@ -28,6 +53,7 @@
     <arg name="with_px4" value="true"/>
   </include>
   <include file="$(find ocean_simulation_gazebo)/launch/core/wamv_spawn.launch">
+    <arg name="usv_model" value="$(arg usv_model)"/>
     <arg name="usv_x" value="$(arg usv_x)"/>
     <arg name="usv_y" value="$(arg usv_y)"/>
     <arg name="usv_z" value="$(arg usv_z)"/>

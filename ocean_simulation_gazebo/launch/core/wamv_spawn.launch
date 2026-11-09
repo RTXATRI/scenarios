@@ -1,16 +1,29 @@
 <?xml version="1.0"?>
+<!--
+  文件作用：WAM-V SDF 放置模块：在已运行的 Gazebo 中按世界位姿生成无人船，实例名固定为 wamv。
+  usv_model 选择原船或 AprilTag 船模，沿用 SDF 中的 /wamv 传感器和推进器接口。
+-->
 <launch>
+  <!-- Model resource selection; the runtime instance and ROS interfaces stay wamv. -->
+  <!-- 无人船模型资源名：wamv 为原船，wamv_apriltag 为带船顶标签的模型。 -->
+  <arg name="usv_model" default="wamv"/>
   <!-- World-frame position in metres; roll, pitch and yaw in radians. -->
+  <!-- 无人船出生位置 X，Gazebo 世界坐标，单位 m。 -->
   <arg name="usv_x" default="-570"/>
+  <!-- 无人船出生位置 Y，Gazebo 世界坐标，单位 m。 -->
   <arg name="usv_y" default="167"/>
+  <!-- 无人船模型原点的出生高度 Z，Gazebo 世界坐标，单位 m。 -->
   <arg name="usv_z" default="0.1"/>
+  <!-- 无人船出生横滚角 roll，单位 rad。 -->
   <arg name="usv_roll" default="0"/>
+  <!-- 无人船出生俯仰角 pitch，单位 rad。 -->
   <arg name="usv_pitch" default="0"/>
+  <!-- 无人船出生航向角 yaw，绕世界 Z 轴，单位 rad。 -->
   <arg name="usv_yaw" default="1"/>
 
   <!-- Empty robot_namespace preserves the SDF's existing /wamv topic and frame configuration. -->
   <node name="spawn_wamv" pkg="gazebo_ros" type="spawn_model" output="screen"
-        args="-sdf -file '$(find ocean_simulation_gazebo)/models/vehicle/wamv/model.sdf'
+        args="-sdf -file '$(find ocean_simulation_gazebo)/models/vehicle/$(arg usv_model)/model.sdf'
               -model wamv -robot_namespace '' -reference_frame world
               -x $(arg usv_x) -y $(arg usv_y) -z $(arg usv_z)
               -R $(arg usv_roll) -P $(arg usv_pitch) -Y $(arg usv_yaw)"/>

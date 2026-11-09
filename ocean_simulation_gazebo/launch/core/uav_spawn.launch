@@ -1,11 +1,21 @@
 <?xml version="1.0"?>
+<!--
+  文件作用：无人机 SDF 放置模块：在已运行的 Gazebo 中生成 lite_quad_uav 模型，实例名固定为 uav_1。
+  这里只设置出生位姿；PX4、MAVROS 和飞行控制由上层入口分别启动。
+-->
 <launch>
   <!-- World-frame position in metres; roll, pitch and yaw in radians. -->
+  <!-- 无人机出生位置 X，Gazebo 世界坐标，单位 m；与 MAVROS 本地原点区分。 -->
   <arg name="uav_x" default="-584.75"/>
+  <!-- 无人机出生位置 Y，Gazebo 世界坐标，单位 m。 -->
   <arg name="uav_y" default="177"/>
+  <!-- 无人机出生高度 Z，Gazebo 世界坐标，单位 m；不表示自动起飞高度。 -->
   <arg name="uav_z" default="1.75"/>
+  <!-- 无人机出生横滚角 roll，单位 rad。 -->
   <arg name="uav_roll" default="0"/>
+  <!-- 无人机出生俯仰角 pitch，单位 rad。 -->
   <arg name="uav_pitch" default="0"/>
+  <!-- 无人机出生航向角 yaw，单位 rad。 -->
   <arg name="uav_yaw" default="0"/>
 
   <node name="spawn_uav" pkg="gazebo_ros" type="spawn_model" output="screen"

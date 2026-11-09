@@ -86,7 +86,9 @@ roslaunch ocean_simulation_gazebo demo_usv.launch world:=/tmp/map1-example.world
 - `models/vehicle/wamv/` 保存原船的 13 个 link、12 个 joint、四推进器、全部传感器和插件，船的位置由 launch 决定。
 - 船内的 23 处旧绝对路径已替换为 `model://`，复用 `wamv_description`、`wamv_gazebo`、`vrx_gazebo` 的 11 个网格及原纹理。
 - `models/other/map1_ocean/` 保留原海浪及渲染参数，实例名必须保持 `ocean_waves`，供浮力和船体动力学插件查找。
-- 2018 码头复用 VRX 的 `dock_2018_dynamic`；2022 码头通过包内 `map1_dock_2022` 复用原动态基座和标牌，修正原模板不存在的连接点，连接至实际存在的基座脊柱块。标牌位置不变，第三方模型文件不变。
+- 2018、2022码头分别引用包内 `dock_2018_static`、`dock_2022_static`：每个码头只有一个静态底座link，保留20／22个独立浮台碰撞盒、标牌与通道，移除浮力和连接关节。网格沿用原动态版本的局部高度（浮台视觉z=0.45、碰撞z=0.25），没有直接替换为网格低0.2m的第三方静态版本。
+- 浮标和小球分别使用 `robotx_light_buoy_static`、`blue_projectile_static`，保留几何、材质和灯光定义，删除浮力计算。所有环境引用显式设置 `static=true`，原本已静态的资源继续复用；船体和海浪场参数不变。
+- 2018码头原红色 `bay_box_exterior` 和绿色 `bay_box` 均作为静态实体障碍：两块红墙尺寸8×1.5×2m，两块绿块尺寸1.5×4×2m，保持原位置、颜色和不透明外观，具备碰撞与正常传感器可见性，全部纳入已知规划地图。四块几何直接放在静态底座link内，连同20个浮台共24个碰撞体，没有新增关节、浮力插件或可见性过滤节点。绿色区域现在不可通航；2022码头原本未启用的示意区域保持现状。
 - 地图不再含运行快照 `<state>`；环境模型从各自 `<include>/<pose>` 指定的位置开始。Demo 中船的默认位姿为 `-570 167 0.1 0 0 1`，可通过 launch 参数覆盖。
 
 ## 控制和传感器接口

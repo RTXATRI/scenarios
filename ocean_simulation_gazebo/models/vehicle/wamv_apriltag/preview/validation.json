@@ -1,0 +1,160 @@
+{
+  "initial_models": [
+    "sydneyregatta",
+    "post_0",
+    "post_1",
+    "post_2",
+    "antenna",
+    "ground_station_0",
+    "ground_station_1",
+    "ground_station_2",
+    "blue_projectile",
+    "ocean_waves",
+    "robotx_dock_2018",
+    "robotx_dock_2018_0",
+    "robotx_dock_2018_1",
+    "robotx_dock_2018_2",
+    "robotx_dock_2022",
+    "robotx_dock_2018_3",
+    "robotx_dock_2018_4",
+    "robotx_dock_2022_0",
+    "robotx_dock_2018_6",
+    "robotx_dock_2022_1",
+    "robotx_dock_2022_2",
+    "robotx_dock_2018_5",
+    "robotx_dock_2022_clone",
+    "robotx_dock_2018_1_clone",
+    "robotx_dock_2022_0_clone",
+    "custom_dock_block_a",
+    "custom_dock_block_b",
+    "custom_dock_block_c",
+    "custom_dock_block_1-1",
+    "custom_dock_block_1-2",
+    "custom_dock_block_1-3",
+    "custom_dock_block_1-4",
+    "custom_dock_block_2-1",
+    "custom_dock_block_2-2",
+    "custom_dock_block_2-3",
+    "custom_dock_block_2-4",
+    "custom_dock_block_3-1",
+    "custom_dock_block_3-2",
+    "custom_dock_block_3-3",
+    "custom_dock_block_3-4",
+    "custom_dock_block_4-1",
+    "custom_dock_block_4-2",
+    "custom_dock_block_4-3",
+    "custom_dock_block_4-4",
+    "dynamic_obstacle_3",
+    "uav_1",
+    "wamv"
+  ],
+  "mavros_connected": true,
+  "boat_initial_position": [
+    -569.9884273784339,
+    167.02515575786154,
+    -0.07261058399775883
+  ],
+  "boat_initial_quaternion": [
+    -0.0008968874735498525,
+    0.005252484285482025,
+    0.47939355731247224,
+    0.8775838559414045
+  ],
+  "top3m_intrinsics": [
+    477.296554,
+    0.0,
+    320.0,
+    0.0,
+    477.296554,
+    180.0,
+    0.0,
+    0.0,
+    1.0
+  ],
+  "top3m": {
+    "id": 3,
+    "size": [
+      0.4
+    ],
+    "position_camera": [
+      -0.010129042863843567,
+      -0.003852900483762209,
+      3.029622774412854
+    ],
+    "stamp": 8.097
+  },
+  "top3m_opencv_ids": [
+    [
+      3
+    ]
+  ],
+  "top5m_intrinsics": [
+    477.296554,
+    0.0,
+    320.0,
+    0.0,
+    477.296554,
+    180.0,
+    0.0,
+    0.0,
+    1.0
+  ],
+  "top5m": {
+    "id": 3,
+    "size": [
+      0.4
+    ],
+    "position_camera": [
+      -0.011452634614696495,
+      0.030139466352829453,
+      5.020679611509047
+    ],
+    "stamp": 8.333
+  },
+  "top5m_opencv_ids": [
+    [
+      3
+    ]
+  ],
+  "boat_displacement_xy_m": 0.3595766330923745,
+  "top3m_after_motion": {
+    "id": 3,
+    "size": [
+      0.4
+    ],
+    "position_camera": [
+      -0.013281249991852153,
+      -0.3820312500613706,
+      2.983103462959426
+    ],
+    "stamp": 12.343
+  },
+  "passed": true,
+  "date": "2026-11-07",
+  "launch": "roslaunch ocean_simulation_gazebo demo_uav_usv.launch gui:=false",
+  "validation_camera_resolution": [
+    640,
+    360
+  ],
+  "nominal_camera_distances_m": [
+    3,
+    5
+  ],
+  "detector_parameters": {
+    "tag_family": "tag36h11",
+    "standalone_tags": [
+      {
+        "id": 3,
+        "size": 0.4
+      }
+    ],
+    "tag_threads": 1,
+    "num_worker_threads": 2
+  },
+  "opencv_corner_refinement": "CORNER_REFINE_APRILTAG",
+  "thrust_test": {
+    "command_per_thruster": 0.2,
+    "command_duration_sim_sec": 3.0,
+    "thruster_count": 4
+  }
+}
